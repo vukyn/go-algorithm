@@ -12,9 +12,7 @@ func SelectSort(nums []int) []int {
 			}
 			// swap the values
 			if i == (lg - 1) {
-				last := nums[lg-1]
-				nums[lg-1] = nums[tmp]
-				nums[tmp] = last
+				nums[lg-1], nums[tmp] = nums[tmp], nums[lg-1]
 				lg -= 1
 			}
 		}
