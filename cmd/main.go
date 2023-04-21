@@ -15,7 +15,7 @@ import (
 
 func main() {
 	// callGenFiles()
-	callGenFilesAndFolders()
+	// callGenFilesAndFolders()
 	callReadFileCountWord()
 }
 

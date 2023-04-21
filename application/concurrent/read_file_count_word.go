@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 	"sync"
 
@@ -26,7 +27,7 @@ func CountWordInFile(de fs.DirEntry, path string, word string) int {
 		countCh := make(chan int, len(dir))
 		for _, e := range dir {
 			if de.IsDir() {
-				CountWordInFile(e, folderPath, word)
+				countCh <- CountWordInFile(e, folderPath, word)
 			} else {
 				wg.Add(1)
 				go func(e fs.DirEntry) {
@@ -59,7 +60,8 @@ func countWord(filePath string, word string) int {
 	scanner.Split(bufio.ScanWords)
 	count := 0
 	for scanner.Scan() {
-		if strings.ToLower(scanner.Text()) == word {
+		// Remove all special characters and convert to lower case
+		if regexp.MustCompile(`[^a-zA-Z0-9 ]+`).ReplaceAllString(strings.ToLower(scanner.Text()), "") == word {
 			count++
 		}
 	}
