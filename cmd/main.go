@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-algirithms/application/concurrent"
 	"go-algirithms/application/constants"
+	"go-algirithms/application/location"
 	"go-algirithms/application/sort"
 	"io/fs"
 	"log"
@@ -16,7 +17,12 @@ import (
 func main() {
 	// callGenFiles()
 	// callGenFilesAndFolders()
-	callReadFileCountWord()
+	// callReadFileCountWord()
+	callGenLocation()
+}
+
+func callGenLocation() {
+	location.GenLocation()
 }
 
 func callReadFileCountWord() {
