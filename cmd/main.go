@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"go-algirithms/application/concurrent"
-	"go-algirithms/application/constants"
-	"go-algirithms/application/location"
-	"go-algirithms/application/sort"
+	"go-algorithms/application/concurrent"
+	"go-algorithms/application/constants"
+	"go-algorithms/application/location"
+	"go-algorithms/application/sort"
+	"go-algorithms/application/warehouse_routing"
 	"io/fs"
 	"log"
 	"math/rand"
@@ -18,11 +19,24 @@ func main() {
 	// callGenFiles()
 	// callGenFilesAndFolders()
 	// callReadFileCountWord()
-	callGenLocation()
+	// callGenLocation()
+	callFindPickingRoute()
 }
 
 func callGenLocation() {
 	location.GenLocation()
+}
+
+func callFindPickingRoute() {
+	waveDistance, routes := warehouseRouting.FindPickingRoute(warehouseRouting.Coordinate{X: 0, Y: 0}, []warehouseRouting.Coordinate{
+		{X: 1, Y: 1},
+		{X: 1, Y: 2},
+		{X: 3, Y: 3},
+		{X: 5, Y: 4},
+		{X: 1, Y: 5},
+	},0 , 10)
+	fmt.Printf("Wave distance: %d\n", waveDistance)
+	fmt.Printf("Routes: %v\n", routes)
 }
 
 func callReadFileCountWord() {

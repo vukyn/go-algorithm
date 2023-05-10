@@ -3,7 +3,7 @@ package concurrent
 import (
 	"bufio"
 	"fmt"
-	"go-algirithms/application/utils"
+	"go-algorithms/application/utils"
 	"io/fs"
 	"log"
 	"os"

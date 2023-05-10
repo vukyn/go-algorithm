@@ -2,7 +2,7 @@ package location
 
 import (
 	"fmt"
-	"go-algirithms/application/utils"
+	"go-algorithms/application/utils"
 	"log"
 	"math/rand"
 	"strings"
