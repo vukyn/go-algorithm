@@ -27,15 +27,15 @@ func FindPickingRoute(originLoc Coordinate, listLoc []Coordinate, yLow, yHigh in
 		var nextLoc Coordinate
 		var distanceNext int
 		listLoc, _, nextLoc, distanceNext = nextLocation(startLoc, listLoc, yLow, yHigh)
-		// If there is no more location to visit
-		if len(listLoc) == 0 {
-			break
-		}
 		// Update start_loc
 		startLoc = nextLoc
 		listChemin = append(listChemin, startLoc)
 		// Update distance
 		waveDistance = waveDistance + distanceNext
+		// If there is no more location to visit
+		if len(listLoc) == 0 {
+			break
+		}
 	}
 
 	// Final distance from last storage location to origin

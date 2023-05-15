@@ -6,11 +6,13 @@ import (
 	"go-algorithms/application/constants"
 	"go-algorithms/application/location"
 	"go-algorithms/application/sort"
-	"go-algorithms/application/warehouse_routing"
+	"go-algorithms/application/utils"
+	warehouseRouting "go-algorithms/application/warehouse_routing"
 	"io/fs"
 	"log"
 	"math/rand"
 	"os"
+	"strings"
 	"sync"
 	"time"
 )
@@ -28,13 +30,49 @@ func callGenLocation() {
 }
 
 func callFindPickingRoute() {
-	waveDistance, routes := warehouseRouting.FindPickingRoute(warehouseRouting.Coordinate{X: 0, Y: 0}, []warehouseRouting.Coordinate{
-		{X: 1, Y: 1},
-		{X: 1, Y: 2},
-		{X: 3, Y: 3},
-		{X: 5, Y: 4},
-		{X: 1, Y: 5},
-	},0 , 10)
+	const LOCATION_FILE_PATH = "assets/location.txt"
+
+	file, err := os.ReadFile(LOCATION_FILE_PATH)
+	if err != nil {
+		log.Fatal(err)
+	}
+	locations := string(file)
+	tempCoordinate := make([]warehouseRouting.Coordinate, 0)
+	coordinate := make([]warehouseRouting.Coordinate, 0)
+	for _, v := range strings.Split(locations, "\n") {
+		axis := strings.Split(v, "-")
+		x, y := axis[0], axis[1]
+		tempCoordinate = append(tempCoordinate, warehouseRouting.Coordinate{
+			X: utils.ConvertStringToInt(x),
+			Y: utils.ConvertStringToInt(y),
+		})
+	}
+	x := 0
+	y := 0
+	for _, v := range tempCoordinate {
+		if (x != v.X && y != v.Y) || (x == v.X && y != v.Y) {
+			x = v.X
+			y = v.Y
+			coordinate = append(coordinate, warehouseRouting.Coordinate{
+				X: x,
+				Y: y,
+			})
+		}
+	}
+
+	s1 := rand.NewSource(time.Now().UnixNano())
+	r1 := rand.New(s1)
+	tempCoordinate = make([]warehouseRouting.Coordinate, 0)
+	tempCoordinate = append(tempCoordinate, warehouseRouting.Coordinate{X: 0, Y: 0})
+	for i := 0; i < 10; i++ {
+		index := r1.Intn(len(coordinate))
+		fmt.Printf("Coornation: %v\n", coordinate[index])
+		tempCoordinate = append(tempCoordinate, coordinate[index])
+	}
+
+	yLow := 0
+	yHigh := 16
+	waveDistance, routes := warehouseRouting.FindPickingRoute(tempCoordinate[0], tempCoordinate[1:], yLow, yHigh)
 	fmt.Printf("Wave distance: %d\n", waveDistance)
 	fmt.Printf("Routes: %v\n", routes)
 }
