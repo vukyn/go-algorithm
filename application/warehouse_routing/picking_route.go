@@ -4,13 +4,8 @@ import "go-algorithms/application/utils"
 
 // Reference: https://www.samirsaci.com/improve-warehouse-productivity-using-order-batching-with-python
 
-type Coordinate struct {
-	X int
-	Y int
-}
-
-// FindPickingRoute is a function to find route for picking
-func FindPickingRoute(originLoc Coordinate, listLoc []Coordinate, yLow, yHigh int) (int, []Coordinate) {
+// FindPickingRouteNN is a function to find route for picking (nearest neighbor heuristic)
+func FindPickingRouteNN(originLoc Coordinate, listLoc []Coordinate, yLow, yHigh int) (int, []Coordinate) {
 
 	// Total distance
 	waveDistance := 0

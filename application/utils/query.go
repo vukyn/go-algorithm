@@ -31,6 +31,16 @@ func Find[T any](list []T, f func(T) bool) T {
 	return newValue
 }
 
+// Remove function remove current element based on index.
+// Remove return current slice without removed element.
+//
+//	 Example:
+//		items := Remove(items, 1)
+func Remove[T any](list []T, i int) []T {
+	list[i] = list[len(list)-1]
+	return list[:len(list)-1]
+}
+
 // IndexOf function return an index in a list.
 //
 //	 Example:

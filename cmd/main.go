@@ -22,14 +22,15 @@ func main() {
 	// callGenFilesAndFolders()
 	// callReadFileCountWord()
 	// callGenLocation()
-	callFindPickingRoute()
+	// callFindPickingRouteNN()
+	callFindPickingRouteSShape()
 }
 
 func callGenLocation() {
 	location.GenLocation()
 }
 
-func callFindPickingRoute() {
+func callFindPickingRouteNN() {
 	const LOCATION_FILE_PATH = "assets/location.txt"
 
 	file, err := os.ReadFile(LOCATION_FILE_PATH)
@@ -72,9 +73,13 @@ func callFindPickingRoute() {
 
 	yLow := 0
 	yHigh := 16
-	waveDistance, routes := warehouseRouting.FindPickingRoute(tempCoordinate[0], tempCoordinate[1:], yLow, yHigh)
+	waveDistance, routes := warehouseRouting.FindPickingRouteNN(tempCoordinate[0], tempCoordinate[1:], yLow, yHigh)
 	fmt.Printf("Wave distance: %d\n", waveDistance)
 	fmt.Printf("Routes: %v\n", routes)
+}
+
+func callFindPickingRouteSShape() {
+	warehouseRouting.FindPickingRouteSShape()
 }
 
 func callReadFileCountWord() {
