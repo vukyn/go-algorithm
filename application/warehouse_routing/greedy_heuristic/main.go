@@ -35,12 +35,14 @@ func (g *Game) Update() error {
 		listPossibleLoc := getPossibleLocation(g.pickerLoc, g.listRemainWalkLoc)
 
 		// Calulate distance from possible walk location to nearest pick location (manhattan distance)
+		nextPickLoc := &warehouseRouting.Coordinate{}
 		minDistance := 99999
 		minPossibleLoc := &warehouseRouting.Coordinate{}
 		for _, possibleLoc := range listPossibleLoc {
 			for _, pickLoc := range g.listPickLoc {
 				distance := warehouseRouting.CalculateEuclideanDistance(possibleLoc, pickLoc)
 				if distance < minDistance {
+					nextPickLoc = pickLoc
 					minDistance = distance
 					minPossibleLoc = possibleLoc
 				}
@@ -54,6 +56,8 @@ func (g *Game) Update() error {
 		} else {
 			g.pickerLoc = g.depotLoc
 		}
+		fmt.Println("Picker move to: ", g.pickerLoc)
+		fmt.Println("Next pick: ", nextPickLoc)
 		g.listRemainWalkLoc = utils.Where(g.listRemainWalkLoc, func(loc *warehouseRouting.Coordinate) bool {
 			return loc.X != minPossibleLoc.X || loc.Y != minPossibleLoc.Y
 		})
@@ -87,7 +91,6 @@ func (g *Game) Update() error {
 		}
 	}
 
-	// fmt.Printf("Picker move to x: %d, y: %d\n", g.pickerLoc.X, g.pickerLoc.Y)
 	return nil
 }
 
