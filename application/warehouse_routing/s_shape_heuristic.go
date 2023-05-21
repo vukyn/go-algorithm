@@ -133,7 +133,7 @@ func FindPickingRouteSShape() {
 	for {
 		listBlockDistance := make([]int, len(listBlockSubAisle))
 		for i, loc := range listBlockSubAisle {
-			listBlockDistance[i] = distanceFromBlockToBlock(listBlockSubAisle[0].Coordinate, loc.Coordinate)
+			listBlockDistance[i] = CalculateEuclideanDistance(listBlockSubAisle[0].Coordinate, loc.Coordinate)
 		}
 
 		// Minimum Distance
@@ -162,7 +162,7 @@ func distanceFromDepot(loc *Coordinate) float64 {
 	return math.Sqrt(math.Pow(float64(loc.X), 2) + math.Pow(float64(loc.Y), 2))
 }
 
-func distanceFromBlockToBlock(loc1, loc2 *Coordinate) int {
+func CalculateEuclideanDistance(loc1, loc2 *Coordinate) int {
 	return int(math.Sqrt(math.Pow(float64(loc2.X-loc1.X), 2) + math.Pow(float64(loc2.Y-loc1.Y), 2)))
 }
 

@@ -46,7 +46,7 @@ func Remove[T any](list []T, i int) []T {
 //	 Example:
 //		index := IndexOf(list, func(n name) bool {return n == "ABC"})
 func IndexOf[T any](list []T, f func(T) bool) int {
-	var index int
+	index := -1
 	for i, v := range list {
 		if f(v) {
 			index = i

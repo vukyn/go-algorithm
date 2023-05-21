@@ -1,8 +1,8 @@
 package warehouseRouting
 
 type Coordinate struct {
-	X int
-	Y int
+	X    int
+	Y    int
 }
 
 type BlockSubAsile struct {
