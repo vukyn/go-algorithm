@@ -163,20 +163,16 @@ func (g *Game) init() {
 			g.listLoc = append(g.listLoc, toCoordinate(x, y))
 			if char == strconv.Itoa(WALL) {
 				g.listWallLoc = append(g.listWallLoc, toCoordinate(x, y))
-				continue
 			}
-			if char == strconv.Itoa(WALK) {
+			if char == strconv.Itoa(WALK) || char == strconv.Itoa(PICKABLE) {
 				g.listWalkLoc = append(g.listWalkLoc, toCoordinate(x, y))
-				g.listRemainWalkLoc = append(g.listWalkLoc, toCoordinate(x, y))
-				continue
+				g.listRemainWalkLoc = append(g.listRemainWalkLoc, toCoordinate(x, y))
 			}
 			if char == strconv.Itoa(PICKABLE) {
 				g.listPickableLoc = append(g.listPickableLoc, toCoordinate(x, y))
-				continue
 			}
 			if char == strconv.Itoa(DEPOT) {
 				g.depotLoc = toCoordinate(x, y)
-				continue
 			}
 		}
 	}
