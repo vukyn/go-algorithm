@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-algorithms/application/concurrent"
 	"go-algorithms/application/constants"
+	"go-algorithms/application/cryption"
 	"go-algorithms/application/location"
 	"go-algorithms/application/sort"
 	"go-algorithms/application/utils"
@@ -25,6 +26,11 @@ func main() {
 	// callGenLocation()
 	// callFindPickingRouteNN()
 	callGreedyHeuristic()
+	// callEncriptMD5()
+}
+
+func callEncriptMD5() {
+	cryption.EncriptMD5()
 }
 
 func callGreedyHeuristic() {

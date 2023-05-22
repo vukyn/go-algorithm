@@ -26,6 +26,7 @@ type Game struct {
 	listRemainWalkLoc []*warehouseRouting.Coordinate
 	listWallLoc       []*warehouseRouting.Coordinate
 	listPickLoc       []*warehouseRouting.Coordinate
+	listPickableLoc   []*warehouseRouting.Coordinate
 }
 
 func (g *Game) Update() error {
@@ -42,7 +43,7 @@ func (g *Game) Update() error {
 			for _, pickLoc := range g.listPickLoc {
 				distance := warehouseRouting.CalculateEuclideanDistance(possibleLoc, pickLoc)
 				if distance < minDistance {
-					nextPickLoc = pickLoc
+					// nextPickLoc = pickLoc
 					minDistance = distance
 					minPossibleLoc = possibleLoc
 				}
@@ -66,7 +67,7 @@ func (g *Game) Update() error {
 			g.isMoving = false
 			// Pick item
 			// var isPicked bool
-			g.listPickLoc, _ = pickItem(g.listPickLoc, g.pickerLoc)
+			g.listPickLoc, _ = pickItem(g.listPickLoc, g.listPickableLoc, g.pickerLoc)
 
 			//Comment if don't want to repeat walk path
 			// if isPicked {
@@ -167,6 +168,10 @@ func (g *Game) init() {
 			if char == strconv.Itoa(WALK) {
 				g.listWalkLoc = append(g.listWalkLoc, toCoordinate(x, y))
 				g.listRemainWalkLoc = append(g.listWalkLoc, toCoordinate(x, y))
+				continue
+			}
+			if char == strconv.Itoa(PICKABLE) {
+				g.listPickableLoc = append(g.listPickableLoc, toCoordinate(x, y))
 				continue
 			}
 			if char == strconv.Itoa(DEPOT) {

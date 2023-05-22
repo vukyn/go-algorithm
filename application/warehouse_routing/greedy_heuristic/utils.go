@@ -75,31 +75,35 @@ func getPossibleLocation(currentLoc *warehouseRouting.Coordinate, locations []*w
 	return listPossibleLoc
 }
 
-func pickItem(listPickLoc []*warehouseRouting.Coordinate, pickerLoc *warehouseRouting.Coordinate) ([]*warehouseRouting.Coordinate, bool) {
+func pickItem(listPickLoc, listPickableLoc []*warehouseRouting.Coordinate, pickerLoc *warehouseRouting.Coordinate) ([]*warehouseRouting.Coordinate, bool) {
 	isPicked := false
-	if northLoc := utils.IndexOf(listPickLoc, func(loc *warehouseRouting.Coordinate) bool {
-		return loc.X == pickerLoc.X && loc.Y == pickerLoc.Y-1
-	}); northLoc != -1 {
-		isPicked = true
-		listPickLoc = append(listPickLoc[:northLoc], listPickLoc[northLoc+1:]...)
-	}
-	if southLoc := utils.IndexOf(listPickLoc, func(loc *warehouseRouting.Coordinate) bool {
-		return loc.X == pickerLoc.X && loc.Y == pickerLoc.Y+1
-	}); southLoc != -1 {
-		isPicked = true
-		listPickLoc = append(listPickLoc[:southLoc], listPickLoc[southLoc+1:]...)
-	}
-	if westLoc := utils.IndexOf(listPickLoc, func(loc *warehouseRouting.Coordinate) bool {
-		return loc.X == pickerLoc.X-1 && loc.Y == pickerLoc.Y
-	}); westLoc != -1 {
-		isPicked = true
-		listPickLoc = append(listPickLoc[:westLoc], listPickLoc[westLoc+1:]...)
-	}
-	if eastLoc := utils.IndexOf(listPickLoc, func(loc *warehouseRouting.Coordinate) bool {
-		return loc.X == pickerLoc.X+1 && loc.Y == pickerLoc.Y
-	}); eastLoc != -1 {
-		isPicked = true
-		listPickLoc = append(listPickLoc[:eastLoc], listPickLoc[eastLoc+1:]...)
+	if pickableLoc := utils.Find(listPickableLoc, func(loc *warehouseRouting.Coordinate) bool {
+		return loc.X == pickerLoc.X && loc.Y == pickerLoc.Y
+	}); pickableLoc != nil {
+		if northLoc := utils.IndexOf(listPickLoc, func(loc *warehouseRouting.Coordinate) bool {
+			return loc.X == pickerLoc.X && loc.Y == pickerLoc.Y-1
+		}); northLoc != -1 {
+			isPicked = true
+			listPickLoc = append(listPickLoc[:northLoc], listPickLoc[northLoc+1:]...)
+		}
+		if southLoc := utils.IndexOf(listPickLoc, func(loc *warehouseRouting.Coordinate) bool {
+			return loc.X == pickerLoc.X && loc.Y == pickerLoc.Y+1
+		}); southLoc != -1 {
+			isPicked = true
+			listPickLoc = append(listPickLoc[:southLoc], listPickLoc[southLoc+1:]...)
+		}
+		if westLoc := utils.IndexOf(listPickLoc, func(loc *warehouseRouting.Coordinate) bool {
+			return loc.X == pickerLoc.X-1 && loc.Y == pickerLoc.Y
+		}); westLoc != -1 {
+			isPicked = true
+			listPickLoc = append(listPickLoc[:westLoc], listPickLoc[westLoc+1:]...)
+		}
+		if eastLoc := utils.IndexOf(listPickLoc, func(loc *warehouseRouting.Coordinate) bool {
+			return loc.X == pickerLoc.X+1 && loc.Y == pickerLoc.Y
+		}); eastLoc != -1 {
+			isPicked = true
+			listPickLoc = append(listPickLoc[:eastLoc], listPickLoc[eastLoc+1:]...)
+		}
 	}
 	return listPickLoc, isPicked
 }

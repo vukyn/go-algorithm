@@ -7,6 +7,7 @@ const (
 	WALL          = 1
 	WALK          = 0
 	DEPOT         = 2
+	PICKABLE      = 4
 	RECT_WIDTH    = 40
 	RECT_HEIGHT   = 40
 )
