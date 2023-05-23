@@ -1,4 +1,4 @@
-package warehouseRouting
+package nearestNeighbor
 
 import (
 	"go-algorithms/application/utils"

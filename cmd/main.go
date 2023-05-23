@@ -9,6 +9,9 @@ import (
 	"go-algorithms/application/sort"
 	"go-algorithms/application/utils"
 	warehouseRouting "go-algorithms/application/warehouse_routing"
+	"go-algorithms/application/warehouse_routing/models"
+	nearestNeighbor "go-algorithms/application/warehouse_routing/nearest_neighbor"
+	"go-algorithms/application/warehouse_routing/s_shape"
 	"io/fs"
 	"log"
 	"math/rand"
@@ -48,12 +51,12 @@ func callFindPickingRouteNN() {
 		log.Fatal(err)
 	}
 	locations := string(file)
-	tempCoordinate := make([]warehouseRouting.Coordinate, 0)
-	coordinate := make([]warehouseRouting.Coordinate, 0)
+	tempCoordinate := make([]models.Coordinate, 0)
+	coordinate := make([]models.Coordinate, 0)
 	for _, v := range strings.Split(locations, "\n") {
 		axis := strings.Split(v, "-")
 		x, y := axis[0], axis[1]
-		tempCoordinate = append(tempCoordinate, warehouseRouting.Coordinate{
+		tempCoordinate = append(tempCoordinate, models.Coordinate{
 			X: utils.ConvertStringToInt(x),
 			Y: utils.ConvertStringToInt(y),
 		})
@@ -64,7 +67,7 @@ func callFindPickingRouteNN() {
 		if (x != v.X && y != v.Y) || (x == v.X && y != v.Y) {
 			x = v.X
 			y = v.Y
-			coordinate = append(coordinate, warehouseRouting.Coordinate{
+			coordinate = append(coordinate, models.Coordinate{
 				X: x,
 				Y: y,
 			})
@@ -73,8 +76,8 @@ func callFindPickingRouteNN() {
 
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
-	tempCoordinate = make([]warehouseRouting.Coordinate, 0)
-	tempCoordinate = append(tempCoordinate, warehouseRouting.Coordinate{X: 0, Y: 0})
+	tempCoordinate = make([]models.Coordinate, 0)
+	tempCoordinate = append(tempCoordinate, models.Coordinate{X: 0, Y: 0})
 	for i := 0; i < 10; i++ {
 		index := r1.Intn(len(coordinate))
 		fmt.Printf("Coornation: %v\n", coordinate[index])
@@ -83,13 +86,13 @@ func callFindPickingRouteNN() {
 
 	yLow := 0
 	yHigh := 16
-	waveDistance, routes := warehouseRouting.FindPickingRouteNN(tempCoordinate[0], tempCoordinate[1:], yLow, yHigh)
+	waveDistance, routes := nearestNeighbor.FindPickingRouteNN(tempCoordinate[0], tempCoordinate[1:], yLow, yHigh)
 	fmt.Printf("Wave distance: %d\n", waveDistance)
 	fmt.Printf("Routes: %v\n", routes)
 }
 
 func callFindPickingRouteSShape() {
-	warehouseRouting.FindPickingRouteSShape()
+	sshape.FindPickingRouteSShape()
 }
 
 func callReadFileCountWord() {
