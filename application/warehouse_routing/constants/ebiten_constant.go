@@ -1,4 +1,4 @@
-package greedyheuristic
+package constants
 
 const (
 	MAP_PATH      = "warehouse_map.txt"

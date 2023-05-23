@@ -9,7 +9,6 @@ import (
 	"go-algorithms/application/sort"
 	"go-algorithms/application/utils"
 	warehouseRouting "go-algorithms/application/warehouse_routing"
-	greedyheuristic "go-algorithms/application/warehouse_routing/greedy_heuristic"
 	"io/fs"
 	"log"
 	"math/rand"
@@ -25,7 +24,7 @@ func main() {
 	// callReadFileCountWord()
 	// callGenLocation()
 	// callFindPickingRouteNN()
-	callGreedyHeuristic()
+	callWarehouseRouting()
 	// callEncriptMD5()
 }
 
@@ -33,8 +32,8 @@ func callEncriptMD5() {
 	cryption.EncriptMD5()
 }
 
-func callGreedyHeuristic() {
-	greedyheuristic.Run(nil)
+func callWarehouseRouting() {
+	warehouseRouting.Run(nil)
 }
 
 func callGenLocation() {

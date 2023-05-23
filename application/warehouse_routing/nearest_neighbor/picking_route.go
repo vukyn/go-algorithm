@@ -1,11 +1,14 @@
 package warehouseRouting
 
-import "go-algorithms/application/utils"
+import (
+	"go-algorithms/application/utils"
+	"go-algorithms/application/warehouse_routing/models"
+)
 
 // Reference: https://www.samirsaci.com/improve-warehouse-productivity-using-order-batching-with-python
 
 // FindPickingRouteNN is a function to find route for picking (nearest neighbor heuristic)
-func FindPickingRouteNN(originLoc Coordinate, listLoc []Coordinate, yLow, yHigh int) (int, []Coordinate) {
+func FindPickingRouteNN(originLoc models.Coordinate, listLoc []models.Coordinate, yLow, yHigh int) (int, []models.Coordinate) {
 
 	// Total distance
 	waveDistance := 0
@@ -14,12 +17,12 @@ func FindPickingRouteNN(originLoc Coordinate, listLoc []Coordinate, yLow, yHigh 
 	startLoc := originLoc
 
 	// List of locations to visit
-	listChemin := make([]Coordinate, 0)
+	listChemin := make([]models.Coordinate, 0)
 	listChemin = append(listChemin, startLoc)
 
 	for {
 		// Going to next location
-		var nextLoc Coordinate
+		var nextLoc models.Coordinate
 		var distanceNext int
 		listLoc, _, nextLoc, distanceNext = nextLocation(startLoc, listLoc, yLow, yHigh)
 		// Update start_loc
@@ -42,7 +45,7 @@ func FindPickingRouteNN(originLoc Coordinate, listLoc []Coordinate, yLow, yHigh 
 
 // DistanceBetweenTwoLocations is a function to calculate distance between two locations
 // loc1(Start Point) and loc2(End Point) are coordinate of two locations
-func distanceBetweenTwoLocations(loc1, loc2 Coordinate, yLow, yHigh int) int {
+func distanceBetweenTwoLocations(loc1, loc2 models.Coordinate, yLow, yHigh int) int {
 	var (
 		distanceX  int
 		distanceY  int
@@ -70,7 +73,7 @@ func distanceBetweenTwoLocations(loc1, loc2 Coordinate, yLow, yHigh int) int {
 }
 
 // NextLocation is a function to find closest next location
-func nextLocation(startLoc Coordinate, listLoc []Coordinate, yLow, yHigh int) ([]Coordinate, Coordinate, Coordinate, int) {
+func nextLocation(startLoc models.Coordinate, listLoc []models.Coordinate, yLow, yHigh int) ([]models.Coordinate, models.Coordinate, models.Coordinate, int) {
 
 	// Distance to every next points candidate
 	listDistance := make([]int, len(listLoc))
