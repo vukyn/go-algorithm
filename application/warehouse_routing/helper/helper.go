@@ -5,6 +5,8 @@ import (
 	"go-algorithms/application/warehouse_routing/constants"
 	"go-algorithms/application/warehouse_routing/models"
 	"math"
+	"math/rand"
+	"time"
 )
 
 func CalculateEuclideanDistance(loc1, loc2 *models.Coordinate) int {
@@ -150,4 +152,26 @@ func PickItem(listPickLoc, listPickableLoc []*models.Coordinate, pickerLoc *mode
 		}
 	}
 	return listPickLoc, isPicked
+}
+
+func GenerateRandomPickLocation(quantity int32, listWallLoc []*models.Coordinate) (listPickLoc []*models.Coordinate) {
+	if quantity/2 > int32(len(listWallLoc)) {
+		panic("Quantity must half or less than number of wall location")
+	}
+	s1 := rand.NewSource(time.Now().UnixNano())
+	r1 := rand.New(s1)
+	for i := 0; i < 10; i++ {
+		index := r1.Intn(len(listWallLoc))
+		if len(listPickLoc) > 0 {
+			if loc := utils.Find(listPickLoc, func(loc *models.Coordinate) bool {
+				return loc.X == listWallLoc[index].X && loc.Y == listWallLoc[index].Y
+			}); loc == nil {
+				listPickLoc = append(listPickLoc, listWallLoc[index])
+			}
+		} else {
+			listPickLoc = append(listPickLoc, listWallLoc[index])
+		}
+	}
+
+	return listPickLoc
 }

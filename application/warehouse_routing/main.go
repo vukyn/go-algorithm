@@ -165,20 +165,7 @@ func (g *Game) init() {
 	}
 
 	// Random pick location
-	// s1 := rand.NewSource(time.Now().UnixNano())
-	// r1 := rand.New(s1)
-	// for i := 0; i < 10; i++ {
-	// 	index := r1.Intn(len(g.ListWallLoc))
-	// 	if len(g.ListPickLoc) > 0 {
-	// 		if loc := utils.Find(g.ListPickLoc, func(loc *warehouseRouting.Coordinate) bool {
-	// 			return loc.X == g.ListWallLoc[index].X && loc.Y == g.ListWallLoc[index].Y
-	// 		}); loc == nil {
-	// 			g.ListPickLoc = append(g.ListPickLoc, g.ListWallLoc[index])
-	// 		}
-	// 	} else {
-	// 		g.ListPickLoc = append(g.ListPickLoc, g.ListWallLoc[index])
-	// 	}
-	// }
+	// g.ListPickLoc = helper.GenerateRandomPickLocation(8, g.ListWallLoc)
 
 	g.ListPickLoc = append(g.ListPickLoc, &models.Coordinate{X: 0, Y: 15})
 	g.ListPickLoc = append(g.ListPickLoc, &models.Coordinate{X: 0, Y: 14})
