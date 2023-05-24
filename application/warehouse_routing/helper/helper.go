@@ -6,11 +6,42 @@ import (
 	"go-algorithms/application/warehouse_routing/models"
 	"math"
 	"math/rand"
+	"sort"
 	"time"
 )
 
 func CalculateEuclideanDistance(loc1, loc2 *models.Coordinate) int {
 	return int(math.Sqrt(math.Pow(float64(loc2.X-loc1.X), 2) + math.Pow(float64(loc2.Y-loc1.Y), 2)))
+}
+
+func CalculateManhattanDistance(loc1, loc2 *models.Coordinate) int {
+	return utils.Abs(loc2.X-loc1.X) + utils.Abs(loc2.Y-loc1.Y)
+}
+
+func SortLocationEuclidean(seedLoc *models.Coordinate, listLoc []*models.Coordinate, asc bool) []*models.Coordinate {
+	if asc {
+		sort.Slice(listLoc, func(i, j int) bool {
+			return CalculateEuclideanDistance(seedLoc, listLoc[i]) > CalculateEuclideanDistance(seedLoc, listLoc[j])
+		})
+	} else {
+		sort.Slice(listLoc, func(i, j int) bool {
+			return CalculateEuclideanDistance(seedLoc, listLoc[i]) < CalculateEuclideanDistance(seedLoc, listLoc[j])
+		})
+	}
+	return listLoc
+}
+
+func SortLocationManhattan(seedLoc *models.Coordinate, listLoc []*models.Coordinate, asc bool) []*models.Coordinate {
+	if asc {
+		sort.Slice(listLoc, func(i, j int) bool {
+			return CalculateManhattanDistance(seedLoc, listLoc[i]) > CalculateManhattanDistance(seedLoc, listLoc[j])
+		})
+	} else {
+		sort.Slice(listLoc, func(i, j int) bool {
+			return CalculateManhattanDistance(seedLoc, listLoc[i]) < CalculateManhattanDistance(seedLoc, listLoc[j])
+		})
+	}
+	return listLoc
 }
 
 func IsBelongBlockAisle(layout []*models.BlockSubAsile, loc *models.Coordinate, blockIndex int) bool {
@@ -152,6 +183,31 @@ func PickItem(listPickLoc, listPickableLoc []*models.Coordinate, pickerLoc *mode
 		}
 	}
 	return listPickLoc, isPicked
+}
+
+func GetPossibleLocation(currentLoc *models.Coordinate, locations []*models.Coordinate) []*models.Coordinate {
+	listPossibleLoc := make([]*models.Coordinate, 0)
+	if northLoc := utils.Find(locations, func(loc *models.Coordinate) bool {
+		return loc.X == currentLoc.X && loc.Y == currentLoc.Y-1
+	}); northLoc != nil {
+		listPossibleLoc = append(listPossibleLoc, northLoc)
+	}
+	if southLoc := utils.Find(locations, func(loc *models.Coordinate) bool {
+		return loc.X == currentLoc.X && loc.Y == currentLoc.Y+1
+	}); southLoc != nil {
+		listPossibleLoc = append(listPossibleLoc, southLoc)
+	}
+	if westLoc := utils.Find(locations, func(loc *models.Coordinate) bool {
+		return loc.X == currentLoc.X-1 && loc.Y == currentLoc.Y
+	}); westLoc != nil {
+		listPossibleLoc = append(listPossibleLoc, westLoc)
+	}
+	if eastLoc := utils.Find(locations, func(loc *models.Coordinate) bool {
+		return loc.X == currentLoc.X+1 && loc.Y == currentLoc.Y
+	}); eastLoc != nil {
+		listPossibleLoc = append(listPossibleLoc, eastLoc)
+	}
+	return listPossibleLoc
 }
 
 func GenerateRandomPickLocation(quantity int32, listWallLoc []*models.Coordinate) (listPickLoc []*models.Coordinate) {

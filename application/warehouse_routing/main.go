@@ -4,78 +4,92 @@ import (
 	"fmt"
 	"go-algorithms/application/utils"
 	"go-algorithms/application/warehouse_routing/constants"
-	"go-algorithms/application/warehouse_routing/greedy"
 	"go-algorithms/application/warehouse_routing/helper"
 	"go-algorithms/application/warehouse_routing/models"
+	"go-algorithms/application/warehouse_routing/test"
 	"image/color"
 	"strconv"
 	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 type Game struct {
+	IsLock     bool
 	IsMoving   bool
 	CurrentLoc struct {
 		X float32
 		Y float32
 	}
-	DepotLoc          *models.Coordinate
-	PickerLoc         *models.Coordinate
-	ListLoc           []*models.Coordinate
-	ListWalkLoc       []*models.Coordinate
-	ListRemainWalkLoc []*models.Coordinate
-	ListWallLoc       []*models.Coordinate
-	ListPickLoc       []*models.Coordinate
-	ListPickableLoc   []*models.Coordinate
+	DepotLoc           *models.Coordinate
+	PickerLoc          *models.Coordinate
+	NextPickLoc        *models.Coordinate
+	ListLoc            []*models.Coordinate
+	ListWalkLoc        []*models.Coordinate
+	ListRemainWalkLoc  []*models.Coordinate
+	ListWallLoc        []*models.Coordinate
+	ListPickLoc        []*models.Coordinate
+	ListCurrentPickLoc []*models.Coordinate
+	ListPickableLoc    []*models.Coordinate
 }
 
 func (g *Game) Update() error {
 
-	if !g.IsMoving {
+	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		g.IsLock = !g.IsLock
+	}
 
-		// call greedy heuristic
-		minPossibleLoc := greedy.CallGreedyHeuristic(g.PickerLoc, g.ListPickLoc, g.ListRemainWalkLoc)
+	if !g.IsLock {
+		if len(g.ListPickLoc) == 0 {
+			g.ListRemainWalkLoc = g.ListWalkLoc
+		}
+		if !g.IsMoving {
+			// call greedy heuristic
+			// nextPick := greedy.CallGreedyHeuristic(g.PickerLoc, g.ListPickLoc, g.ListRemainWalkLoc)
 
-		// Move picker to nearest possible walk location
-		g.IsMoving = true
-		if len(g.ListPickLoc) > 0 {
-			g.PickerLoc = minPossibleLoc
+			// call test
+			if len(g.ListCurrentPickLoc) == 0 {
+				g.ListCurrentPickLoc = test.GetNextPickLocation(g.ListPickLoc, g.PickerLoc)
+				fmt.Printf("Next pick: %v\n", utils.PrettyPrint(g.ListCurrentPickLoc))
+			}
+
+			// Move picker to nearest possible walk location
+			g.IsMoving = true
+			if len(g.ListCurrentPickLoc) > 0 {
+				g.NextPickLoc = g.ListCurrentPickLoc[0]
+				g.ListCurrentPickLoc = g.ListCurrentPickLoc[1:]
+			} else {
+				g.NextPickLoc = g.DepotLoc
+			}
 		} else {
-			g.PickerLoc = g.DepotLoc
-		}
-		g.ListRemainWalkLoc = utils.Where(g.ListRemainWalkLoc, func(loc *models.Coordinate) bool {
-			return loc.X != minPossibleLoc.X || loc.Y != minPossibleLoc.Y
-		})
-	} else {
-		if strconv.Itoa(g.PickerLoc.X) == fmt.Sprintf("%.f", g.CurrentLoc.X) && strconv.Itoa(g.PickerLoc.Y) == fmt.Sprintf("%.f", g.CurrentLoc.Y) {
-			g.IsMoving = false
-			// Pick item
-			// var isPicked bool
-			g.ListPickLoc, _ = helper.PickItem(g.ListPickLoc, g.ListPickableLoc, g.PickerLoc)
-
-			//Comment if don't want to repeat walk path
-			// if isPicked {
-			// 	g.ListRemainWalkLoc = g.ListWalkLoc
-			// }
-		}
-		// Move left
-		if float32(g.PickerLoc.X) < g.CurrentLoc.X {
-			g.CurrentLoc.X -= 0.1
-		}
-		// Move right
-		if float32(g.PickerLoc.X) > g.CurrentLoc.X {
-			g.CurrentLoc.X += 0.1
-		}
-		// Move up
-		if float32(g.PickerLoc.Y) < g.CurrentLoc.Y {
-			g.CurrentLoc.Y -= 0.1
-		}
-		// Move down
-		if float32(g.PickerLoc.Y) > g.CurrentLoc.Y {
-			g.CurrentLoc.Y += 0.1
+			// moving
+			if g.PickerLoc != g.NextPickLoc {
+				if strconv.Itoa(g.PickerLoc.X) == fmt.Sprintf("%.f", g.CurrentLoc.X) && strconv.Itoa(g.PickerLoc.Y) == fmt.Sprintf("%.f", g.CurrentLoc.Y) {
+					var isPicked bool
+					g.ListPickLoc, isPicked = helper.PickItem(g.ListPickLoc, g.ListPickableLoc, g.PickerLoc)
+					if isPicked {
+						g.IsMoving = false
+					} else {
+						listPossibleLoc := helper.GetPossibleLocation(g.PickerLoc, g.ListRemainWalkLoc)
+						// Calulate distance from possible walk location to nearest pick location (euclidean distance)
+						minDistance := 99999
+						for _, possibleLoc := range listPossibleLoc {
+							distance := helper.CalculateEuclideanDistance(possibleLoc, g.NextPickLoc)
+							if distance < minDistance {
+								minDistance = distance
+								g.PickerLoc = possibleLoc
+							}
+						}
+						// g.ListRemainWalkLoc = utils.Where(g.ListRemainWalkLoc, func(loc *models.Coordinate) bool {
+						// 	return loc.X != g.PickerLoc.X || loc.Y != g.PickerLoc.Y
+						// })
+					}
+				}
+				g.moving()
+			}
 		}
 	}
 
@@ -139,6 +153,7 @@ func newGame() ebiten.Game {
 	g := &Game{}
 	g.init()
 	g.IsMoving = false
+	g.IsLock = false
 	return g
 }
 
@@ -172,7 +187,12 @@ func (g *Game) init() {
 	g.ListPickLoc = append(g.ListPickLoc, &models.Coordinate{X: 0, Y: 7})
 	g.ListPickLoc = append(g.ListPickLoc, &models.Coordinate{X: 0, Y: 2})
 	g.ListPickLoc = append(g.ListPickLoc, &models.Coordinate{X: 2, Y: 1})
+	g.ListPickLoc = append(g.ListPickLoc, &models.Coordinate{X: 3, Y: 1})
+	g.ListPickLoc = append(g.ListPickLoc, &models.Coordinate{X: 3, Y: 5})
+	g.ListPickLoc = append(g.ListPickLoc, &models.Coordinate{X: 3, Y: 8})
+	g.ListPickLoc = append(g.ListPickLoc, &models.Coordinate{X: 5, Y: 2})
 	g.ListPickLoc = append(g.ListPickLoc, &models.Coordinate{X: 6, Y: 2})
+	g.ListPickLoc = append(g.ListPickLoc, &models.Coordinate{X: 6, Y: 9})
 	g.ListPickLoc = append(g.ListPickLoc, &models.Coordinate{X: 5, Y: 16})
 	g.ListPickLoc = append(g.ListPickLoc, &models.Coordinate{X: 6, Y: 16})
 
@@ -180,4 +200,23 @@ func (g *Game) init() {
 	g.PickerLoc = g.DepotLoc
 	g.CurrentLoc.X = float32(g.PickerLoc.X)
 	g.CurrentLoc.Y = float32(g.PickerLoc.Y)
+}
+
+func (g *Game) moving() {
+	// Move left
+	if float32(g.PickerLoc.X) < g.CurrentLoc.X {
+		g.CurrentLoc.X -= 0.1
+	}
+	// Move right
+	if float32(g.PickerLoc.X) > g.CurrentLoc.X {
+		g.CurrentLoc.X += 0.1
+	}
+	// Move up
+	if float32(g.PickerLoc.Y) < g.CurrentLoc.Y {
+		g.CurrentLoc.Y -= 0.1
+	}
+	// Move down
+	if float32(g.PickerLoc.Y) > g.CurrentLoc.Y {
+		g.CurrentLoc.Y += 0.1
+	}
 }

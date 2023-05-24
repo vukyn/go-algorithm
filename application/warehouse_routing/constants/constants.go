@@ -21,21 +21,21 @@ const (
 )
 
 var (
-	SUB_AISLE_1  = []*models.Coordinate{{X: 1, Y: 1}, {X: 1, Y: 2}, {X: 1, Y: 3}, {X: 1, Y: 4}, {X: 1, Y: 5}}
-	SUB_AISLE_2  = []*models.Coordinate{{X: 1, Y: 6}, {X: 1, Y: 7}, {X: 1, Y: 8}, {X: 1, Y: 9}, {X: 1, Y: 10}}
-	SUB_AISLE_3  = []*models.Coordinate{{X: 1, Y: 11}, {X: 1, Y: 12}, {X: 1, Y: 13}, {X: 1, Y: 14}, {X: 1, Y: 15}, {X: 1, Y: 16}}
-	SUB_AISLE_4  = []*models.Coordinate{{X: 2, Y: 1}, {X: 2, Y: 2}, {X: 2, Y: 3}, {X: 2, Y: 4}}
-	SUB_AISLE_5  = []*models.Coordinate{{X: 2, Y: 5}, {X: 2, Y: 6}, {X: 2, Y: 7}, {X: 2, Y: 8}}
-	SUB_AISLE_6  = []*models.Coordinate{{X: 2, Y: 9}, {X: 2, Y: 10}, {X: 2, Y: 11}, {X: 2, Y: 12}, {X: 2, Y: 13}}
-	SUB_AISLE_7  = []*models.Coordinate{{X: 3, Y: 1}, {X: 3, Y: 2}, {X: 3, Y: 3}, {X: 3, Y: 4}}
-	SUB_AISLE_8  = []*models.Coordinate{{X: 3, Y: 5}, {X: 3, Y: 6}, {X: 3, Y: 7}, {X: 3, Y: 8}}
-	SUB_AISLE_9  = []*models.Coordinate{{X: 3, Y: 9}, {X: 3, Y: 10}, {X: 3, Y: 11}, {X: 3, Y: 12}, {X: 3, Y: 13}}
-	SUB_AISLE_10 = []*models.Coordinate{{X: 4, Y: 1}, {X: 4, Y: 2}, {X: 4, Y: 3}, {X: 4, Y: 4}}
-	SUB_AISLE_11 = []*models.Coordinate{{X: 4, Y: 5}, {X: 4, Y: 6}, {X: 4, Y: 7}, {X: 4, Y: 8}}
-	SUB_AISLE_12 = []*models.Coordinate{{X: 4, Y: 9}, {X: 4, Y: 10}, {X: 4, Y: 11}, {X: 4, Y: 12}}
-	SUB_AISLE_13 = []*models.Coordinate{{X: 5, Y: 1}, {X: 5, Y: 2}, {X: 5, Y: 3}, {X: 5, Y: 4}}
-	SUB_AISLE_14 = []*models.Coordinate{{X: 5, Y: 5}, {X: 5, Y: 6}, {X: 5, Y: 7}, {X: 5, Y: 8}}
-	SUB_AISLE_15 = []*models.Coordinate{{X: 5, Y: 9}, {X: 5, Y: 10}, {X: 5, Y: 11}, {X: 5, Y: 12}}
+	SUB_AISLE_1  = []*models.Coordinate{{X: 0, Y: 1}, {X: 0, Y: 2}, {X: 0, Y: 3}, {X: 0, Y: 4}, {X: 0, Y: 5}}
+	SUB_AISLE_2  = []*models.Coordinate{{X: 0, Y: 6}, {X: 0, Y: 7}, {X: 0, Y: 8}, {X: 0, Y: 9}, {X: 0, Y: 10}}
+	SUB_AISLE_3  = []*models.Coordinate{{X: 0, Y: 11}, {X: 0, Y: 12}, {X: 0, Y: 13}, {X: 0, Y: 14}, {X: 0, Y: 15}, {X: 0, Y: 16}}
+	SUB_AISLE_4  = []*models.Coordinate{{X: 2, Y: 1}, {X: 2, Y: 2}, {X: 2, Y: 3}, {X: 2, Y: 4}, {X: 2, Y: 5}}
+	SUB_AISLE_5  = []*models.Coordinate{{X: 2, Y: 7}, {X: 2, Y: 8}, {X: 2, Y: 9}, {X: 2, Y: 10}}
+	SUB_AISLE_6  = []*models.Coordinate{{X: 2, Y: 13}, {X: 2, Y: 14}, {X: 2, Y: 15}, {X: 2, Y: 16}}
+	SUB_AISLE_7  = []*models.Coordinate{{X: 3, Y: 1}, {X: 3, Y: 2}, {X: 3, Y: 3}, {X: 3, Y: 4}, {X: 3, Y: 5}}
+	SUB_AISLE_8  = []*models.Coordinate{{X: 3, Y: 7}, {X: 3, Y: 8}, {X: 3, Y: 9}, {X: 3, Y: 10}}
+	SUB_AISLE_9  = []*models.Coordinate{{X: 3, Y: 13}, {X: 3, Y: 14}, {X: 3, Y: 15}, {X: 3, Y: 16}}
+	SUB_AISLE_10 = []*models.Coordinate{{X: 5, Y: 2}, {X: 5, Y: 3}, {X: 5, Y: 4}, {X: 5, Y: 5}}
+	SUB_AISLE_11 = []*models.Coordinate{{X: 5, Y: 7}, {X: 5, Y: 8}, {X: 5, Y: 9}, {X: 5, Y: 10}}
+	SUB_AISLE_12 = []*models.Coordinate{{X: 5, Y: 13}, {X: 5, Y: 14}, {X: 5, Y: 15}, {X: 5, Y: 16}}
+	SUB_AISLE_13 = []*models.Coordinate{{X: 6, Y: 2}, {X: 6, Y: 3}, {X: 6, Y: 4}, {X: 6, Y: 5}}
+	SUB_AISLE_14 = []*models.Coordinate{{X: 6, Y: 7}, {X: 6, Y: 8}, {X: 6, Y: 9}, {X: 6, Y: 10}}
+	SUB_AISLE_15 = []*models.Coordinate{{X: 6, Y: 13}, {X: 6, Y: 14}, {X: 6, Y: 15}, {X: 6, Y: 16}}
 )
 
 var WAREHOUSE_LAYOUT = []*models.BlockSubAsile{
