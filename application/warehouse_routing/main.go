@@ -8,6 +8,7 @@ import (
 	"go-algorithms/application/warehouse_routing/models"
 	"go-algorithms/application/warehouse_routing/test"
 	"image/color"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -20,6 +21,7 @@ import (
 type Game struct {
 	IsLock     bool
 	IsMoving   bool
+	Stage      int
 	CurrentLoc struct {
 		X float32
 		Y float32
@@ -34,6 +36,7 @@ type Game struct {
 	ListPickLoc        []*models.Coordinate
 	ListCurrentPickLoc []*models.Coordinate
 	ListPickableLoc    []*models.Coordinate
+	ListWalkingLoc     []*models.Coordinate
 }
 
 func (g *Game) Update() error {
@@ -46,46 +49,101 @@ func (g *Game) Update() error {
 		if len(g.ListPickLoc) == 0 {
 			g.ListRemainWalkLoc = g.ListWalkLoc
 		}
-		if !g.IsMoving {
-			// call greedy heuristic
-			// nextPick := greedy.CallGreedyHeuristic(g.PickerLoc, g.ListPickLoc, g.ListRemainWalkLoc)
+		if g.Stage == 1 {
+			if !g.IsMoving {
+				// call greedy heuristic
+				// nextPick := greedy.CallGreedyHeuristic(g.PickerLoc, g.ListPickLoc, g.ListRemainWalkLoc)
 
-			// call test
-			if len(g.ListCurrentPickLoc) == 0 {
-				g.ListCurrentPickLoc = test.GetNextPickLocation(g.ListPickLoc, g.PickerLoc)
-				fmt.Printf("Next pick: %v\n", utils.PrettyPrint(g.ListCurrentPickLoc))
-			}
+				// call test
+				if len(g.ListCurrentPickLoc) == 0 {
+					g.ListCurrentPickLoc, g.Stage = test.GetNextPickLocation(g.ListPickLoc, g.ListWalkLoc, g.PickerLoc)
+					fmt.Printf("Next pick: %v\n", utils.PrettyPrint(g.ListCurrentPickLoc))
+				}
 
-			// Move picker to nearest possible walk location
-			g.IsMoving = true
-			if len(g.ListCurrentPickLoc) > 0 {
-				g.NextPickLoc = g.ListCurrentPickLoc[0]
-				g.ListCurrentPickLoc = g.ListCurrentPickLoc[1:]
+				// Move picker to nearest possible walk location
+				if g.Stage == 1 {
+					g.IsMoving = true
+					if len(g.ListCurrentPickLoc) > 0 {
+						g.NextPickLoc = g.ListCurrentPickLoc[0]
+						g.ListCurrentPickLoc = g.ListCurrentPickLoc[1:]
+					} else {
+						g.NextPickLoc = g.DepotLoc
+					}
+				}
 			} else {
-				g.NextPickLoc = g.DepotLoc
+				// moving
+				if g.PickerLoc != g.NextPickLoc {
+					if strconv.Itoa(g.PickerLoc.X) == fmt.Sprintf("%.f", g.CurrentLoc.X) && strconv.Itoa(g.PickerLoc.Y) == fmt.Sprintf("%.f", g.CurrentLoc.Y) {
+						var isPicked bool
+						g.ListPickLoc, isPicked = helper.PickItem(g.ListPickLoc, g.ListPickableLoc, g.PickerLoc)
+						if isPicked {
+							g.IsMoving = false
+						} else {
+							listPossibleLoc := helper.GetPossibleLocation(g.PickerLoc, g.ListRemainWalkLoc)
+							// Calulate distance from possible walk location to nearest pick location (euclidean distance)
+							minDistance := 99999
+							for _, possibleLoc := range listPossibleLoc {
+								distance := helper.CalculateEuclideanDistance(possibleLoc, g.NextPickLoc)
+								if distance < minDistance {
+									minDistance = distance
+									g.PickerLoc = possibleLoc
+								}
+							}
+							// g.ListRemainWalkLoc = utils.Where(g.ListRemainWalkLoc, func(loc *models.Coordinate) bool {
+							// 	return loc.X != g.PickerLoc.X || loc.Y != g.PickerLoc.Y
+							// })
+						}
+					}
+					g.moving()
+				}
 			}
-		} else {
-			// moving
-			if g.PickerLoc != g.NextPickLoc {
+		}
+		if g.Stage != 1 {
+			if !g.IsMoving {
+				// call greedy heuristic
+				// nextPick := greedy.CallGreedyHeuristic(g.PickerLoc, g.ListPickLoc, g.ListRemainWalkLoc)
+
+				// call test
+				if len(g.ListCurrentPickLoc) == 0 {
+					g.ListCurrentPickLoc, g.Stage = test.GetNextPickLocation(g.ListPickLoc, g.ListWalkLoc, g.PickerLoc)
+					fmt.Printf("Next pick: %v\n", utils.PrettyPrint(g.ListCurrentPickLoc))
+				}
+
+				// Move picker to nearest possible walk location
+				g.IsMoving = true
+				if len(g.ListCurrentPickLoc) > 0 {
+					min := 99999
+					for _, loc := range g.ListCurrentPickLoc {
+						routes := helper.CalculateDfsDistance(g.PickerLoc, loc, g.ListWalkLoc)
+						sort.Slice(routes, func(i, j int) bool {
+							return routes[i].Distance < routes[j].Distance
+						})
+						if routes[0].Distance < min {
+							min = routes[0].Distance
+							g.ListWalkingLoc = routes[0].ListVisitedLoc
+						}
+					}
+					fmt.Printf("ListCurrentPickLoc: %v\n", utils.PrettyPrint(g.ListCurrentPickLoc))
+					fmt.Printf("Walking loc: %v\n", utils.PrettyPrint(g.ListWalkingLoc))
+					// g.NextPickLoc = g.ListCurrentPickLoc[0]
+					g.ListCurrentPickLoc = utils.Where(g.ListCurrentPickLoc, func(loc *models.Coordinate) bool {
+						return loc.X != g.ListWalkingLoc[len(g.ListWalkingLoc)-1].X || loc.Y != g.ListWalkingLoc[len(g.ListWalkingLoc)-1].Y
+					})
+				} else {
+					g.NextPickLoc = g.DepotLoc
+				}
+			} else {
+				// moving
 				if strconv.Itoa(g.PickerLoc.X) == fmt.Sprintf("%.f", g.CurrentLoc.X) && strconv.Itoa(g.PickerLoc.Y) == fmt.Sprintf("%.f", g.CurrentLoc.Y) {
 					var isPicked bool
 					g.ListPickLoc, isPicked = helper.PickItem(g.ListPickLoc, g.ListPickableLoc, g.PickerLoc)
 					if isPicked {
 						g.IsMoving = false
 					} else {
-						listPossibleLoc := helper.GetPossibleLocation(g.PickerLoc, g.ListRemainWalkLoc)
-						// Calulate distance from possible walk location to nearest pick location (euclidean distance)
-						minDistance := 99999
-						for _, possibleLoc := range listPossibleLoc {
-							distance := helper.CalculateEuclideanDistance(possibleLoc, g.NextPickLoc)
-							if distance < minDistance {
-								minDistance = distance
-								g.PickerLoc = possibleLoc
-							}
+						if len(g.ListWalkingLoc) > 0 {
+							g.PickerLoc = g.ListWalkingLoc[0]
+							g.ListWalkingLoc = g.ListWalkingLoc[1:]
 						}
-						// g.ListRemainWalkLoc = utils.Where(g.ListRemainWalkLoc, func(loc *models.Coordinate) bool {
-						// 	return loc.X != g.PickerLoc.X || loc.Y != g.PickerLoc.Y
-						// })
 					}
 				}
 				g.moving()
@@ -154,6 +212,7 @@ func newGame() ebiten.Game {
 	g.init()
 	g.IsMoving = false
 	g.IsLock = false
+	g.Stage = 1
 	return g
 }
 

@@ -7,7 +7,7 @@ import (
 	"go-algorithms/application/warehouse_routing/models"
 )
 
-func GetNextPickLocation(listPickLoc []*models.Coordinate, pickerLoc *models.Coordinate) []*models.Coordinate {
+func GetNextPickLocation(listPickLoc, ListWalkLoc []*models.Coordinate, pickerLoc *models.Coordinate) ([]*models.Coordinate, int) {
 
 	listCurrentPickLoc := make([]*models.Coordinate, 0)
 	if len(listPickLoc) > 0 {
@@ -55,7 +55,7 @@ func GetNextPickLocation(listPickLoc []*models.Coordinate, pickerLoc *models.Coo
 			}
 		}
 		if len(listCurrentPickLoc) > 0 {
-			return helper.SortLocationEuclidean(&models.Coordinate{X: 1, Y: 17}, listCurrentPickLoc, false)
+			return helper.SortLocationEuclidean(&models.Coordinate{X: 1, Y: 17}, listCurrentPickLoc, false), 1
 		}
 
 		// Pick furthest Aisle 3 or Asile 4 or Asile 5
@@ -81,7 +81,7 @@ func GetNextPickLocation(listPickLoc []*models.Coordinate, pickerLoc *models.Coo
 			}
 		}
 		if len(listCurrentPickLoc) > 0 {
-			return helper.SortLocationManhattan(&models.Coordinate{X: 4, Y: 0}, listCurrentPickLoc, false)
+			return listCurrentPickLoc, 2
 		}
 
 		// Pick middle Aisle 3 or Asile 4 or Asile 5
@@ -108,12 +108,12 @@ func GetNextPickLocation(listPickLoc []*models.Coordinate, pickerLoc *models.Coo
 		}
 		if pickerLoc.X == 4 || pickerLoc.X == 5 {
 			if len(listCurrentPickLoc) > 0 {
-				return helper.SortLocationManhattan(&models.Coordinate{X: 4, Y: 6}, listCurrentPickLoc, false)
+				return helper.SortLocationManhattan(&models.Coordinate{X: 4, Y: 6}, listCurrentPickLoc, false), 3
 			}
 		}
 		if pickerLoc.X == 6 || pickerLoc.X == 7 {
 			if len(listCurrentPickLoc) > 0 {
-				return helper.SortLocationManhattan(&models.Coordinate{X: 7, Y: 6}, listCurrentPickLoc, false)
+				return helper.SortLocationManhattan(&models.Coordinate{X: 7, Y: 6}, listCurrentPickLoc, false), 3
 			}
 		}
 
@@ -141,12 +141,12 @@ func GetNextPickLocation(listPickLoc []*models.Coordinate, pickerLoc *models.Coo
 		}
 		if pickerLoc.X == 4 || pickerLoc.X == 5 {
 			if len(listCurrentPickLoc) > 0 {
-				return helper.SortLocationManhattan(&models.Coordinate{X: 4, Y: 12}, listCurrentPickLoc, false)
+				return helper.SortLocationManhattan(&models.Coordinate{X: 4, Y: 12}, listCurrentPickLoc, false), 4
 			}
 		}
 		if pickerLoc.X == 6 || pickerLoc.X == 7 {
 			if len(listCurrentPickLoc) > 0 {
-				return helper.SortLocationManhattan(&models.Coordinate{X: 7, Y: 12}, listCurrentPickLoc, false)
+				return helper.SortLocationManhattan(&models.Coordinate{X: 7, Y: 12}, listCurrentPickLoc, false), 4
 			}
 		}
 
@@ -156,5 +156,5 @@ func GetNextPickLocation(listPickLoc []*models.Coordinate, pickerLoc *models.Coo
 		// 	return helper.SortLocation(&models.Coordinate{X: 7, Y: 6}, listCurrentPickLoc, false)
 		// }
 	}
-	return listCurrentPickLoc
+	return listCurrentPickLoc, 0
 }

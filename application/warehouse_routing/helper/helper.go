@@ -4,19 +4,10 @@ import (
 	"go-algorithms/application/utils"
 	"go-algorithms/application/warehouse_routing/constants"
 	"go-algorithms/application/warehouse_routing/models"
-	"math"
 	"math/rand"
 	"sort"
 	"time"
 )
-
-func CalculateEuclideanDistance(loc1, loc2 *models.Coordinate) int {
-	return int(math.Sqrt(math.Pow(float64(loc2.X-loc1.X), 2) + math.Pow(float64(loc2.Y-loc1.Y), 2)))
-}
-
-func CalculateManhattanDistance(loc1, loc2 *models.Coordinate) int {
-	return utils.Abs(loc2.X-loc1.X) + utils.Abs(loc2.Y-loc1.Y)
-}
 
 func SortLocationEuclidean(seedLoc *models.Coordinate, listLoc []*models.Coordinate, asc bool) []*models.Coordinate {
 	if asc {

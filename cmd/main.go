@@ -11,7 +11,7 @@ import (
 	warehouseRouting "go-algorithms/application/warehouse_routing"
 	"go-algorithms/application/warehouse_routing/models"
 	nearestNeighbor "go-algorithms/application/warehouse_routing/nearest_neighbor"
-	"go-algorithms/application/warehouse_routing/s_shape"
+	sshape "go-algorithms/application/warehouse_routing/s_shape"
 	"io/fs"
 	"log"
 	"math/rand"
@@ -29,6 +29,40 @@ func main() {
 	// callFindPickingRouteNN()
 	callWarehouseRouting()
 	// callEncriptMD5()
+
+	// listRemainWalkLoc := []*models.Coordinate{
+	// 	{X: 1, Y: 17},
+	// 	{X: 1, Y: 16},
+	// 	{X: 1, Y: 15},
+	// 	{X: 1, Y: 14},
+	// 	{X: 1, Y: 13},
+	// 	{X: 1, Y: 12},
+	// 	{X: 1, Y: 11},
+	// 	{X: 2, Y: 17},
+	// 	{X: 2, Y: 12},
+	// 	{X: 3, Y: 17},
+	// 	{X: 3, Y: 12},
+	// 	{X: 4, Y: 17},
+	// 	{X: 4, Y: 16},
+	// 	{X: 4, Y: 15},
+	// 	{X: 4, Y: 14},
+	// 	{X: 4, Y: 13},
+	// 	{X: 4, Y: 12},
+	// 	{X: 4, Y: 11},
+	// 	{X: 5, Y: 17},
+	// 	{X: 5, Y: 12},
+	// 	{X: 6, Y: 17},
+	// 	{X: 6, Y: 12},
+	// 	{X: 7, Y: 12},
+	// 	{X: 7, Y: 13},
+	// 	{X: 7, Y: 14},
+	// 	{X: 7, Y: 15},
+	// 	{X: 7, Y: 16},
+	// 	{X: 7, Y: 17},
+	// }
+	// pickerLoc := &models.Coordinate{X: 4, Y: 16}
+	// nextPickLoc := &models.Coordinate{X: 7, Y: 16}
+	// visitedLoc, distance := helper.CalculateDfsDistance(pickerLoc, nextPickLoc, listRemainWalkLoc)
 }
 
 func callEncriptMD5() {
