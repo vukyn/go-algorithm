@@ -9,13 +9,17 @@ import (
 	"go-algorithms/application/sort"
 	"go-algorithms/application/utils"
 	warehouseRouting "go-algorithms/application/warehouse_routing"
+	warehouseConstants "go-algorithms/application/warehouse_routing/constants"
+	"go-algorithms/application/warehouse_routing/helper"
 	"go-algorithms/application/warehouse_routing/models"
 	nearestNeighbor "go-algorithms/application/warehouse_routing/nearest_neighbor"
 	sshape "go-algorithms/application/warehouse_routing/s_shape"
+	"go-algorithms/application/warehouse_routing/test"
 	"io/fs"
 	"log"
 	"math/rand"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -27,39 +31,52 @@ func main() {
 	// callReadFileCountWord()
 	// callGenLocation()
 	// callFindPickingRouteNN()
-	callWarehouseRouting()
+	// callWarehouseRouting()
 	// callEncriptMD5()
 
-	// listRemainWalkLoc := []*models.Coordinate{
-	// 	{X: 1, Y: 17},
-	// 	{X: 1, Y: 16},
-	// 	{X: 1, Y: 15},
-	// 	{X: 1, Y: 14},
-	// 	{X: 1, Y: 13},
-	// 	{X: 1, Y: 12},
-	// 	{X: 1, Y: 11},
-	// 	{X: 2, Y: 17},
-	// 	{X: 2, Y: 12},
-	// 	{X: 3, Y: 17},
-	// 	{X: 3, Y: 12},
-	// 	{X: 4, Y: 17},
-	// 	{X: 4, Y: 16},
-	// 	{X: 4, Y: 15},
-	// 	{X: 4, Y: 14},
-	// 	{X: 4, Y: 13},
-	// 	{X: 4, Y: 12},
-	// 	{X: 4, Y: 11},
-	// 	{X: 5, Y: 17},
-	// 	{X: 5, Y: 12},
-	// 	{X: 6, Y: 17},
-	// 	{X: 6, Y: 12},
-	// 	{X: 7, Y: 12},
-	// 	{X: 7, Y: 13},
-	// 	{X: 7, Y: 14},
-	// 	{X: 7, Y: 15},
-	// 	{X: 7, Y: 16},
-	// 	{X: 7, Y: 17},
-	// }
+	pickerLoc := &models.Coordinate{}
+	listWallLoc := make([]*models.Coordinate, 0)
+	listWalkLoc := make([]*models.Coordinate, 0)
+	listRemainWalkLoc := make([]*models.Coordinate, 0)
+	listPickLoc := make([]*models.Coordinate, 0)
+	listPickableLoc := make([]*models.Coordinate, 0)
+
+	lines := helper.ReadMap()
+	for y, line := range lines {
+		for x, char := range strings.Split(line, "-") {
+			if char == strconv.Itoa(warehouseConstants.WALL) {
+				listWallLoc = append(listWallLoc, &models.Coordinate{X: x, Y: y})
+			}
+			if char == strconv.Itoa(warehouseConstants.WALK) || char == strconv.Itoa(warehouseConstants.PICKABLE) {
+				listWalkLoc = append(listWalkLoc, &models.Coordinate{X: x, Y: y})
+				listRemainWalkLoc = append(listRemainWalkLoc, &models.Coordinate{X: x, Y: y})
+			}
+			if char == strconv.Itoa(warehouseConstants.PICKABLE) {
+				listPickableLoc = append(listPickableLoc, &models.Coordinate{X: x, Y: y})
+			}
+			if char == strconv.Itoa(warehouseConstants.DEPOT) {
+				pickerLoc = &models.Coordinate{X: x + 1, Y: y}
+			}
+		}
+	}
+
+	// listPickLoc = append(listPickLoc, &models.Coordinate{X: 0, Y: 15})
+	// listPickLoc = append(listPickLoc, &models.Coordinate{X: 0, Y: 14})
+	// listPickLoc = append(listPickLoc, &models.Coordinate{X: 0, Y: 7})
+	// listPickLoc = append(listPickLoc, &models.Coordinate{X: 0, Y: 2})
+	// listPickLoc = append(listPickLoc, &models.Coordinate{X: 2, Y: 1})
+	listPickLoc = append(listPickLoc, &models.Coordinate{X: 3, Y: 1})
+	listPickLoc = append(listPickLoc, &models.Coordinate{X: 3, Y: 5})
+	listPickLoc = append(listPickLoc, &models.Coordinate{X: 3, Y: 8})
+	listPickLoc = append(listPickLoc, &models.Coordinate{X: 5, Y: 2})
+	listPickLoc = append(listPickLoc, &models.Coordinate{X: 6, Y: 2})
+	listPickLoc = append(listPickLoc, &models.Coordinate{X: 6, Y: 9})
+	listPickLoc = append(listPickLoc, &models.Coordinate{X: 5, Y: 16})
+	listPickLoc = append(listPickLoc, &models.Coordinate{X: 6, Y: 16})
+
+	nextPickLoc, stage := test.GetNextPickLocation(listPickLoc, listWalkLoc, pickerLoc, 1)
+	fmt.Printf("Stage: %v\n", stage)
+	fmt.Printf("Pick list: %v\n", utils.PrettyPrint(nextPickLoc))
 	// pickerLoc := &models.Coordinate{X: 4, Y: 16}
 	// nextPickLoc := &models.Coordinate{X: 7, Y: 16}
 	// visitedLoc, distance := helper.CalculateDfsDistance(pickerLoc, nextPickLoc, listRemainWalkLoc)

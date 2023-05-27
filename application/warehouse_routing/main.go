@@ -56,7 +56,7 @@ func (g *Game) Update() error {
 
 				// call test
 				if len(g.ListCurrentPickLoc) == 0 {
-					g.ListCurrentPickLoc, g.Stage = test.GetNextPickLocation(g.ListPickLoc, g.ListWalkLoc, g.PickerLoc)
+					g.ListCurrentPickLoc, g.Stage = test.GetNextPickLocation(g.ListPickLoc, g.ListWalkLoc, g.PickerLoc, g.Stage)
 					fmt.Printf("Next pick: %v\n", utils.PrettyPrint(g.ListCurrentPickLoc))
 				}
 
@@ -105,7 +105,7 @@ func (g *Game) Update() error {
 
 				// call test
 				if len(g.ListCurrentPickLoc) == 0 {
-					g.ListCurrentPickLoc, g.Stage = test.GetNextPickLocation(g.ListPickLoc, g.ListWalkLoc, g.PickerLoc)
+					g.ListCurrentPickLoc, g.Stage = test.GetNextPickLocation(g.ListPickLoc, g.ListWalkLoc, g.PickerLoc, g.Stage)
 					fmt.Printf("Next pick: %v\n", utils.PrettyPrint(g.ListCurrentPickLoc))
 				}
 
