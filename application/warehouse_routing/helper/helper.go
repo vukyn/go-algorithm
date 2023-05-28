@@ -180,16 +180,24 @@ func GenerateRandomPickLocation(quantity int32, listWallLoc []*models.Coordinate
 	}
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
-	for i := 0; i < 10; i++ {
+	i := 0
+	for {
 		index := r1.Intn(len(listWallLoc))
+		pickLoc := listWallLoc[index]
+		pickLoc.Id = i + 1
 		if len(listPickLoc) > 0 {
 			if loc := utils.Find(listPickLoc, func(loc *models.Coordinate) bool {
-				return loc.X == listWallLoc[index].X && loc.Y == listWallLoc[index].Y
+				return loc.X == pickLoc.X && loc.Y == pickLoc.Y
 			}); loc == nil {
-				listPickLoc = append(listPickLoc, listWallLoc[index])
+				i++
+				listPickLoc = append(listPickLoc, pickLoc)
 			}
 		} else {
-			listPickLoc = append(listPickLoc, listWallLoc[index])
+			i++
+			listPickLoc = append(listPickLoc, pickLoc)
+		}
+		if int32(i) == quantity {
+			break
 		}
 	}
 

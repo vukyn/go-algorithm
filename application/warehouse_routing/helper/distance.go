@@ -113,7 +113,7 @@ func SortLocationDfs(seedLoc *models.Coordinate, listLoc []*models.Coordinate, l
 	dfsRoutes := make([]*models.Route, 0)
 	sortedLocs := make([]*models.Coordinate, 0)
 	length := len(listLoc)
-	for i := -1; i < length -1 ; i++ {
+	for i := -1; i < length-1; i++ {
 		if i >= 0 {
 			seedLoc = sortedLocs[i]
 			listLoc = utils.Where(listLoc, func(loc *models.Coordinate) bool {
@@ -155,7 +155,7 @@ func SortLocationDfs(seedLoc *models.Coordinate, listLoc []*models.Coordinate, l
 
 			// }
 			sortedLocs = append(sortedLocs, dfsRoutes[idx].ListVisitedLoc[0])
-		} else {
+		} else if len(listLoc) == 1 {
 			sortedLocs = append(sortedLocs, listLoc[0])
 		}
 		dfsRoutes = make([]*models.Route, 0)
