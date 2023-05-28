@@ -5,6 +5,11 @@ type Coordinate struct {
 	Y int
 }
 
+type Route struct {
+	Distance       int
+	ListVisitedLoc []*Coordinate
+}
+
 type BlockSubAsile struct {
 	Id         int
 	Name       string

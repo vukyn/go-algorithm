@@ -4,6 +4,7 @@ import (
 	"go-algorithms/application/utils"
 	"go-algorithms/application/warehouse_routing/models"
 	"math"
+	"sort"
 )
 
 func CalculateEuclideanDistance(loc1, loc2 *models.Coordinate) int {
@@ -48,12 +49,7 @@ func CalculateBfsDistance(pickerLoc *models.Coordinate, listRemainWalkLoc []*mod
 	return listVisitedLoc, distance
 }
 
-type Route struct {
-	Distance       int
-	ListVisitedLoc []*models.Coordinate
-}
-
-func CalculateDfsDistance(pickerLoc, nextPickLoc *models.Coordinate, listRemainWalkLoc []*models.Coordinate) []*Route {
+func CalculateDfsDistance(pickerLoc, nextPickLoc *models.Coordinate, listRemainWalkLoc []*models.Coordinate) []*models.Route {
 	i := 0
 	distance := 0
 	listQueueLoc := make([]*models.Coordinate, 0)
@@ -64,8 +60,8 @@ func CalculateDfsDistance(pickerLoc, nextPickLoc *models.Coordinate, listRemainW
 
 	lastLoc := &models.Coordinate{}
 	lastLoc = pickerLoc
-	listRouteLoc := make([]*Route, 0)
-	listRouteLoc = append(listRouteLoc, &Route{ListVisitedLoc: []*models.Coordinate{lastLoc}})
+	listRouteLoc := make([]*models.Route, 0)
+	listRouteLoc = append(listRouteLoc, &models.Route{ListVisitedLoc: []*models.Coordinate{lastLoc}})
 
 	for len(listQueueLoc) > 0 {
 		distance += 1
@@ -86,15 +82,136 @@ func CalculateDfsDistance(pickerLoc, nextPickLoc *models.Coordinate, listRemainW
 			childPossibleLoc = SortLocationEuclidean(nextPickLoc, childPossibleLoc, false)
 			listQueueLoc = append(childPossibleLoc[:1], listQueueLoc...)
 		} else if len(listQueueLoc) > 0 {
-			listRouteLoc[i].Distance += 1
-			listRouteLoc[i].ListVisitedLoc = append(listRouteLoc[i].ListVisitedLoc, nextPickLoc)
+			if !isDeadEnd(currentLoc, nextPickLoc, listRemainWalkLoc) {
+				listRouteLoc[i].Distance += 1
+				listRouteLoc[i].ListVisitedLoc = append(listRouteLoc[i].ListVisitedLoc, nextPickLoc)
+			}
 			i++
 			distance = 0
-			listRouteLoc = append(listRouteLoc, &Route{ListVisitedLoc: []*models.Coordinate{lastLoc}})
+			listRouteLoc = append(listRouteLoc, &models.Route{ListVisitedLoc: []*models.Coordinate{lastLoc}})
 		} else {
-			listRouteLoc[i].Distance += 1
-			listRouteLoc[i].ListVisitedLoc = append(listRouteLoc[i].ListVisitedLoc, nextPickLoc)
+			if !isDeadEnd(currentLoc, nextPickLoc, listRemainWalkLoc) {
+				listRouteLoc[i].Distance += 1
+				listRouteLoc[i].ListVisitedLoc = append(listRouteLoc[i].ListVisitedLoc, nextPickLoc)
+			}
 		}
 	}
+
 	return listRouteLoc
+}
+
+func isDeadEnd(currentLoc, nextPickLoc *models.Coordinate, listWalkLoc []*models.Coordinate) bool {
+	possibleLocs := GetPossibleLocation(currentLoc, listWalkLoc)
+	if loc := utils.Find(possibleLocs, func(loc *models.Coordinate) bool {
+		return loc.X == nextPickLoc.X && loc.Y == nextPickLoc.Y
+	}); loc != nil {
+		return false
+	}
+	return true
+}
+
+func SortLocationDfs(seedLoc *models.Coordinate, listLoc []*models.Coordinate, listWalkLoc []*models.Coordinate) []*models.Coordinate {
+
+	dfsRoutes := make([]*models.Route, 0)
+	sortedLocs := make([]*models.Coordinate, 0)
+	length := len(listLoc)
+	for i := -1; i < length -1 ; i++ {
+		if i >= 0 {
+			seedLoc = sortedLocs[i]
+			listLoc = utils.Where(listLoc, func(loc *models.Coordinate) bool {
+				return loc.X != seedLoc.X || loc.Y != seedLoc.Y
+			})
+		}
+		if len(listLoc) > 1 {
+			for _, loc := range listLoc {
+				dfsLocs := CalculateDfsDistance(seedLoc, loc, listWalkLoc)
+				// Remove any dead end route
+				min := 99999
+				resLoc := &models.Coordinate{}
+				for _, route := range dfsLocs {
+					if route.ListVisitedLoc[len(route.ListVisitedLoc)-1].X == loc.X && route.ListVisitedLoc[len(route.ListVisitedLoc)-1].Y == loc.Y && route.Distance < min {
+						min = route.Distance
+						resLoc = route.ListVisitedLoc[len(route.ListVisitedLoc)-1]
+					}
+				}
+				// listDistance := make([]int, 0)
+				// for _, dfsLoc := range dfsLocs {
+				// 	listDistance = append(listDistance, dfsLoc.Distance)
+				// }
+				// min := utils.Min(listDistance...)
+				// idx := utils.IndexOf(dfsLocs, func(dfsLoc *models.Route) bool {
+				// 	return dfsLoc.Distance == min
+				// })
+				if resLoc.X != 0 && resLoc.Y != 0 {
+					route := &models.Route{
+						Distance:       min,
+						ListVisitedLoc: []*models.Coordinate{resLoc},
+					}
+					dfsRoutes = append(dfsRoutes, route)
+				}
+			}
+			listDistance := make([]int, 0)
+			for _, dfsLoc := range dfsRoutes {
+				listDistance = append(listDistance, dfsLoc.Distance)
+			}
+			min := utils.Min(listDistance...)
+			idx := utils.IndexOf(dfsRoutes, func(dfsLoc *models.Route) bool {
+				return dfsLoc.Distance == min
+			})
+			sortedLocs = append(sortedLocs, dfsRoutes[idx].ListVisitedLoc[0])
+		} else {
+			sortedLocs = append(sortedLocs, listLoc[0])
+		}
+		dfsRoutes = make([]*models.Route, 0)
+	}
+
+	// for i, loc := range listLoc {
+	// 	if i != len(listLoc)-1 {
+	// 		dfsLocs := []*models.Route{}
+	// 		if len(sortedLocs) > 0 {
+	// 			dfsLocs = CalculateDfsDistance(sortedLocs[i-1], loc, listWalkLoc)
+	// 		} else {
+	// 			dfsLocs = CalculateDfsDistance(seedLoc, loc, listWalkLoc)
+	// 		}
+	// 		listDistance := make([]int, 0)
+	// 		for _, dfsLoc := range dfsLocs {
+	// 			listDistance = append(listDistance, dfsLoc.Distance)
+	// 		}
+	// 		min := utils.Min(listDistance...)
+	// 		idx := utils.IndexOf(dfsLocs, func(dfsLoc *models.Route) bool {
+	// 			return dfsLoc.Distance == min
+	// 		})
+	// 		sortedLocs = append(sortedLocs, dfsLocs[idx].ListVisitedLoc[len(dfsLocs[idx].ListVisitedLoc)-1])
+	// 	} else {
+	// 		sortedLocs = append(sortedLocs, loc)
+	// 	}
+	// }
+
+	return sortedLocs
+}
+
+func SortLocationEuclidean(seedLoc *models.Coordinate, listLoc []*models.Coordinate, asc bool) []*models.Coordinate {
+	if asc {
+		sort.Slice(listLoc, func(i, j int) bool {
+			return CalculateEuclideanDistance(seedLoc, listLoc[i]) > CalculateEuclideanDistance(seedLoc, listLoc[j])
+		})
+	} else {
+		sort.Slice(listLoc, func(i, j int) bool {
+			return CalculateEuclideanDistance(seedLoc, listLoc[i]) < CalculateEuclideanDistance(seedLoc, listLoc[j])
+		})
+	}
+	return listLoc
+}
+
+func SortLocationManhattan(seedLoc *models.Coordinate, listLoc []*models.Coordinate, asc bool) []*models.Coordinate {
+	if asc {
+		sort.Slice(listLoc, func(i, j int) bool {
+			return CalculateManhattanDistance(seedLoc, listLoc[i]) > CalculateManhattanDistance(seedLoc, listLoc[j])
+		})
+	} else {
+		sort.Slice(listLoc, func(i, j int) bool {
+			return CalculateManhattanDistance(seedLoc, listLoc[i]) < CalculateManhattanDistance(seedLoc, listLoc[j])
+		})
+	}
+	return listLoc
 }

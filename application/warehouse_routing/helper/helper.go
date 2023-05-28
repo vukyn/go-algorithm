@@ -5,35 +5,8 @@ import (
 	"go-algorithms/application/warehouse_routing/constants"
 	"go-algorithms/application/warehouse_routing/models"
 	"math/rand"
-	"sort"
 	"time"
 )
-
-func SortLocationEuclidean(seedLoc *models.Coordinate, listLoc []*models.Coordinate, asc bool) []*models.Coordinate {
-	if asc {
-		sort.Slice(listLoc, func(i, j int) bool {
-			return CalculateEuclideanDistance(seedLoc, listLoc[i]) > CalculateEuclideanDistance(seedLoc, listLoc[j])
-		})
-	} else {
-		sort.Slice(listLoc, func(i, j int) bool {
-			return CalculateEuclideanDistance(seedLoc, listLoc[i]) < CalculateEuclideanDistance(seedLoc, listLoc[j])
-		})
-	}
-	return listLoc
-}
-
-func SortLocationManhattan(seedLoc *models.Coordinate, listLoc []*models.Coordinate, asc bool) []*models.Coordinate {
-	if asc {
-		sort.Slice(listLoc, func(i, j int) bool {
-			return CalculateManhattanDistance(seedLoc, listLoc[i]) > CalculateManhattanDistance(seedLoc, listLoc[j])
-		})
-	} else {
-		sort.Slice(listLoc, func(i, j int) bool {
-			return CalculateManhattanDistance(seedLoc, listLoc[i]) < CalculateManhattanDistance(seedLoc, listLoc[j])
-		})
-	}
-	return listLoc
-}
 
 func IsBelongBlockAisle(layout []*models.BlockSubAsile, loc *models.Coordinate, blockIndex int) bool {
 	listLoc := layout[blockIndex]

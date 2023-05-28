@@ -86,7 +86,7 @@ func GetNextPickLocation(listPickLoc, ListWalkLoc []*models.Coordinate, pickerLo
 				}
 			}
 			if len(listCurrentPickLoc) > 0 {
-				return helper.SortLocationEuclidean(&models.Coordinate{X: 1, Y: 0}, listCurrentPickLoc, false), 2
+				return helper.SortLocationDfs(&models.Coordinate{X: 1, Y: 0}, listCurrentPickLoc, ListWalkLoc), 2
 			} else {
 				return GetNextPickLocation(listPickLoc, ListWalkLoc, pickerLoc, 3)
 			}
