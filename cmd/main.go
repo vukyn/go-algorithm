@@ -60,23 +60,40 @@ func main() {
 		}
 	}
 
-	// listPickLoc = append(listPickLoc, &models.Coordinate{X: 0, Y: 15})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{X: 0, Y: 14})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{X: 0, Y: 7})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{X: 0, Y: 2})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{X: 2, Y: 1})
-	listPickLoc = append(listPickLoc, &models.Coordinate{X: 3, Y: 1})
-	listPickLoc = append(listPickLoc, &models.Coordinate{X: 3, Y: 5})
-	listPickLoc = append(listPickLoc, &models.Coordinate{X: 3, Y: 8})
-	listPickLoc = append(listPickLoc, &models.Coordinate{X: 5, Y: 2})
-	listPickLoc = append(listPickLoc, &models.Coordinate{X: 6, Y: 2})
-	listPickLoc = append(listPickLoc, &models.Coordinate{X: 6, Y: 9})
-	listPickLoc = append(listPickLoc, &models.Coordinate{X: 5, Y: 16})
-	listPickLoc = append(listPickLoc, &models.Coordinate{X: 6, Y: 16})
-
-	nextPickLoc, stage := test.GetNextPickLocation(listPickLoc, listWalkLoc, pickerLoc, 1)
-	fmt.Printf("Stage: %v\n", stage)
-	fmt.Printf("Pick list: %v\n", utils.PrettyPrint(nextPickLoc))
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 1, X: 0, Y: 15})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 2, X: 0, Y: 14})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 3, X: 0, Y: 7})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 4, X: 0, Y: 2})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 5, X: 2, Y: 1})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 6, X: 3, Y: 1})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 7, X: 3, Y: 5})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 8, X: 3, Y: 8})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 9, X: 5, Y: 2})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 10, X: 6, Y: 2})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 11, X: 6, Y: 9})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 12, X: 5, Y: 16})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 13, X: 6, Y: 16})
+	refListPickLoc := listPickLoc
+	for {
+		nextPickLoc, stage := test.GetNextPickLocation(listPickLoc, listWalkLoc, pickerLoc, 1)
+		// pickerLoc = nextPickLoc[len(nextPickLoc)-1]
+		fmt.Printf("Stage: %v\n", stage)
+		fmt.Print("Locations: ")
+		for _, v := range nextPickLoc {
+			listPickLoc = utils.Where(listPickLoc, func(c *models.Coordinate) bool {
+				return c.Id != v.Id
+			})
+			if pickLoc := utils.Find(refListPickLoc, func(c *models.Coordinate) bool {
+				return c.Id == v.Id
+			}); pickLoc != nil {
+				fmt.Printf("{X:%v, Y:%v}\t", pickLoc.X, pickLoc.Y)
+			}
+		}
+		fmt.Println()
+		if stage == 4 {
+			break
+		}
+	}
 	// pickerLoc := &models.Coordinate{X: 4, Y: 16}
 	// nextPickLoc := &models.Coordinate{X: 7, Y: 16}
 	// visitedLoc, distance := helper.CalculateDfsDistance(pickerLoc, nextPickLoc, listRemainWalkLoc)

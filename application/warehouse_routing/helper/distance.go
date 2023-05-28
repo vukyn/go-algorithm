@@ -96,7 +96,6 @@ func CalculateDfsDistance(pickerLoc, nextPickLoc *models.Coordinate, listRemainW
 			}
 		}
 	}
-
 	return listRouteLoc
 }
 
@@ -111,7 +110,6 @@ func isDeadEnd(currentLoc, nextPickLoc *models.Coordinate, listWalkLoc []*models
 }
 
 func SortLocationDfs(seedLoc *models.Coordinate, listLoc []*models.Coordinate, listWalkLoc []*models.Coordinate) []*models.Coordinate {
-
 	dfsRoutes := make([]*models.Route, 0)
 	sortedLocs := make([]*models.Coordinate, 0)
 	length := len(listLoc)
@@ -132,16 +130,9 @@ func SortLocationDfs(seedLoc *models.Coordinate, listLoc []*models.Coordinate, l
 					if route.ListVisitedLoc[len(route.ListVisitedLoc)-1].X == loc.X && route.ListVisitedLoc[len(route.ListVisitedLoc)-1].Y == loc.Y && route.Distance < min {
 						min = route.Distance
 						resLoc = route.ListVisitedLoc[len(route.ListVisitedLoc)-1]
+						resLoc.Id = loc.Id
 					}
 				}
-				// listDistance := make([]int, 0)
-				// for _, dfsLoc := range dfsLocs {
-				// 	listDistance = append(listDistance, dfsLoc.Distance)
-				// }
-				// min := utils.Min(listDistance...)
-				// idx := utils.IndexOf(dfsLocs, func(dfsLoc *models.Route) bool {
-				// 	return dfsLoc.Distance == min
-				// })
 				if resLoc.X != 0 && resLoc.Y != 0 {
 					route := &models.Route{
 						Distance:       min,
@@ -158,35 +149,17 @@ func SortLocationDfs(seedLoc *models.Coordinate, listLoc []*models.Coordinate, l
 			idx := utils.IndexOf(dfsRoutes, func(dfsLoc *models.Route) bool {
 				return dfsLoc.Distance == min
 			})
+
+			// Assign id
+			// if dfsRoutes[idx].ListVisitedLoc[0].Id == 0 {
+
+			// }
 			sortedLocs = append(sortedLocs, dfsRoutes[idx].ListVisitedLoc[0])
 		} else {
 			sortedLocs = append(sortedLocs, listLoc[0])
 		}
 		dfsRoutes = make([]*models.Route, 0)
 	}
-
-	// for i, loc := range listLoc {
-	// 	if i != len(listLoc)-1 {
-	// 		dfsLocs := []*models.Route{}
-	// 		if len(sortedLocs) > 0 {
-	// 			dfsLocs = CalculateDfsDistance(sortedLocs[i-1], loc, listWalkLoc)
-	// 		} else {
-	// 			dfsLocs = CalculateDfsDistance(seedLoc, loc, listWalkLoc)
-	// 		}
-	// 		listDistance := make([]int, 0)
-	// 		for _, dfsLoc := range dfsLocs {
-	// 			listDistance = append(listDistance, dfsLoc.Distance)
-	// 		}
-	// 		min := utils.Min(listDistance...)
-	// 		idx := utils.IndexOf(dfsLocs, func(dfsLoc *models.Route) bool {
-	// 			return dfsLoc.Distance == min
-	// 		})
-	// 		sortedLocs = append(sortedLocs, dfsLocs[idx].ListVisitedLoc[len(dfsLocs[idx].ListVisitedLoc)-1])
-	// 	} else {
-	// 		sortedLocs = append(sortedLocs, loc)
-	// 	}
-	// }
-
 	return sortedLocs
 }
 
