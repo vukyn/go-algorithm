@@ -180,8 +180,7 @@ func GenerateRandomPickLocation(quantity int32, listWallLoc []*models.Coordinate
 	}
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
-	i := 0
-	for {
+	for i := 0; i < int(quantity); i++ {
 		index := r1.Intn(len(listWallLoc))
 		pickLoc := listWallLoc[index]
 		pickLoc.Id = i + 1
@@ -193,7 +192,6 @@ func GenerateRandomPickLocation(quantity int32, listWallLoc []*models.Coordinate
 				listPickLoc = append(listPickLoc, pickLoc)
 			}
 		} else {
-			i++
 			listPickLoc = append(listPickLoc, pickLoc)
 		}
 		if int32(i) == quantity {
