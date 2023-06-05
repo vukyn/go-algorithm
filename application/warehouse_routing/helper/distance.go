@@ -7,8 +7,8 @@ import (
 	"sort"
 )
 
-func CalculateEuclideanDistance(loc1, loc2 *models.Coordinate) int {
-	return int(math.Sqrt(math.Pow(float64(loc2.X-loc1.X), 2) + math.Pow(float64(loc2.Y-loc1.Y), 2)))
+func CalculateEuclideanDistance(loc1, loc2 *models.Coordinate) float32 {
+	return float32(math.Sqrt(math.Pow(float64(loc2.PickX-loc1.PickX), 2) + math.Pow(float64(loc2.PickY-loc1.PickY), 2)))
 }
 
 func CalculateManhattanDistance(loc1, loc2 *models.Coordinate) int {

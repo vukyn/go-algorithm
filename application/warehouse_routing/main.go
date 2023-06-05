@@ -79,16 +79,16 @@ func (g *Game) Update() error {
 						if isPicked {
 							g.IsMoving = false
 						} else {
-							listPossibleLoc := helper.GetPossibleLocation(g.PickerLoc, g.ListRemainWalkLoc)
+							// listPossibleLoc := helper.GetPossibleLocation(g.PickerLoc, g.ListRemainWalkLoc)
 							// Calulate distance from possible walk location to nearest pick location (euclidean distance)
-							minDistance := 99999
-							for _, possibleLoc := range listPossibleLoc {
-								distance := helper.CalculateEuclideanDistance(possibleLoc, g.NextPickLoc)
-								if distance < minDistance {
-									minDistance = distance
-									g.PickerLoc = possibleLoc
-								}
-							}
+							// minDistance := 99999
+							// for _, possibleLoc := range listPossibleLoc {
+							// 	distance := helper.CalculateEuclideanDistance(possibleLoc, g.NextPickLoc)
+							// 	if distance < minDistance {
+							// 		minDistance = distance
+							// 		g.PickerLoc = possibleLoc
+							// 	}
+							// }
 							// g.ListRemainWalkLoc = utils.Where(g.ListRemainWalkLoc, func(loc *models.Coordinate) bool {
 							// 	return loc.X != g.PickerLoc.X || loc.Y != g.PickerLoc.Y
 							// })

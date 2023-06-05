@@ -1,9 +1,11 @@
 package models
 
 type Coordinate struct {
-	Id int
-	X  int
-	Y  int
+	Id    int
+	X     int
+	Y     int
+	PickX int
+	PickY int
 }
 
 type Route struct {

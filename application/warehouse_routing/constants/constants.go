@@ -21,21 +21,18 @@ const (
 )
 
 var (
-	SUB_AISLE_1  = []*models.Coordinate{{X: 0, Y: 1}, {X: 0, Y: 2}, {X: 0, Y: 3}, {X: 0, Y: 4}, {X: 0, Y: 5}}
-	SUB_AISLE_2  = []*models.Coordinate{{X: 0, Y: 6}, {X: 0, Y: 7}, {X: 0, Y: 8}, {X: 0, Y: 9}, {X: 0, Y: 10}}
-	SUB_AISLE_3  = []*models.Coordinate{{X: 0, Y: 11}, {X: 0, Y: 12}, {X: 0, Y: 13}, {X: 0, Y: 14}, {X: 0, Y: 15}, {X: 0, Y: 16}}
-	SUB_AISLE_4  = []*models.Coordinate{{X: 2, Y: 1}, {X: 2, Y: 2}, {X: 2, Y: 3}, {X: 2, Y: 4}, {X: 2, Y: 5}}
-	SUB_AISLE_5  = []*models.Coordinate{{X: 2, Y: 7}, {X: 2, Y: 8}, {X: 2, Y: 9}, {X: 2, Y: 10}}
-	SUB_AISLE_6  = []*models.Coordinate{{X: 2, Y: 13}, {X: 2, Y: 14}, {X: 2, Y: 15}, {X: 2, Y: 16}}
-	SUB_AISLE_7  = []*models.Coordinate{{X: 3, Y: 1}, {X: 3, Y: 2}, {X: 3, Y: 3}, {X: 3, Y: 4}, {X: 3, Y: 5}}
-	SUB_AISLE_8  = []*models.Coordinate{{X: 3, Y: 7}, {X: 3, Y: 8}, {X: 3, Y: 9}, {X: 3, Y: 10}}
-	SUB_AISLE_9  = []*models.Coordinate{{X: 3, Y: 13}, {X: 3, Y: 14}, {X: 3, Y: 15}, {X: 3, Y: 16}}
-	SUB_AISLE_10 = []*models.Coordinate{{X: 5, Y: 2}, {X: 5, Y: 3}, {X: 5, Y: 4}, {X: 5, Y: 5}}
-	SUB_AISLE_11 = []*models.Coordinate{{X: 5, Y: 7}, {X: 5, Y: 8}, {X: 5, Y: 9}, {X: 5, Y: 10}}
-	SUB_AISLE_12 = []*models.Coordinate{{X: 5, Y: 13}, {X: 5, Y: 14}, {X: 5, Y: 15}, {X: 5, Y: 16}}
-	SUB_AISLE_13 = []*models.Coordinate{{X: 6, Y: 2}, {X: 6, Y: 3}, {X: 6, Y: 4}, {X: 6, Y: 5}}
-	SUB_AISLE_14 = []*models.Coordinate{{X: 6, Y: 7}, {X: 6, Y: 8}, {X: 6, Y: 9}, {X: 6, Y: 10}}
-	SUB_AISLE_15 = []*models.Coordinate{{X: 6, Y: 13}, {X: 6, Y: 14}, {X: 6, Y: 15}, {X: 6, Y: 16}}
+	SUB_AISLE_1  = []*models.Coordinate{{X: 0, Y: 1, PickX: 1, PickY: 1}, {X: 0, Y: 2, PickX: 1, PickY: 2}, {X: 0, Y: 3, PickX: 1, PickY: 3}, {X: 0, Y: 4, PickX: 1, PickY: 4}, {X: 0, Y: 5, PickX: 1, PickY: 5}}
+	SUB_AISLE_2  = []*models.Coordinate{{X: 0, Y: 6, PickX: 1, PickY: 6}, {X: 0, Y: 7, PickX: 1, PickY: 7}, {X: 0, Y: 8, PickX: 1, PickY: 8}, {X: 0, Y: 9, PickX: 1, PickY: 9}, {X: 0, Y: 10, PickX: 1, PickY: 10}}
+	SUB_AISLE_3  = []*models.Coordinate{{X: 0, Y: 11, PickX: 1, PickY: 11}, {X: 0, Y: 12, PickX: 1, PickY: 12}, {X: 0, Y: 13, PickX: 1, PickY: 13}, {X: 0, Y: 14, PickX: 1, PickY: 14}, {X: 0, Y: 15, PickX: 1, PickY: 15}, {X: 0, Y: 16, PickX: 1, PickY: 16}}
+	SUB_AISLE_4  = []*models.Coordinate{{X: 2, Y: 1, PickX: 1, PickY: 1}, {X: 2, Y: 2, PickX: 1, PickY: 2}, {X: 2, Y: 3, PickX: 1, PickY: 3}, {X: 2, Y: 4, PickX: 1, PickY: 4}, {X: 2, Y: 5, PickX: 1, PickY: 5}}
+	SUB_AISLE_5  = []*models.Coordinate{{X: 2, Y: 7, PickX: 1, PickY: 7}, {X: 2, Y: 8, PickX: 1, PickY: 8}, {X: 2, Y: 9, PickX: 1, PickY: 9}, {X: 2, Y: 10, PickX: 1, PickY: 10}}
+	SUB_AISLE_6  = []*models.Coordinate{{X: 2, Y: 13, PickX: 1, PickY: 13}, {X: 2, Y: 14, PickX: 1, PickY: 14}, {X: 2, Y: 15, PickX: 1, PickY: 15}, {X: 2, Y: 16, PickX: 1, PickY: 16}}
+	SUB_AISLE_7  = []*models.Coordinate{{X: 3, Y: 1, PickX: 4, PickY: 1}, {X: 3, Y: 2, PickX: 4, PickY: 2}, {X: 3, Y: 3, PickX: 4, PickY: 3}, {X: 5, Y: 2, PickX: 4, PickY: 2}, {X: 5, Y: 3, PickX: 4, PickY: 3}, {X: 6, Y: 2, PickX: 7, PickY: 2}, {X: 6, Y: 3, PickX: 7, PickY: 3}}
+	SUB_AISLE_8  = []*models.Coordinate{{X: 3, Y: 4, PickX: 4, PickY: 4}, {X: 3, Y: 5, PickX: 4, PickY: 5}, {X: 5, Y: 4, PickX: 4, PickY: 4}, {X: 5, Y: 5, PickX: 4, PickY: 5}, {X: 6, Y: 4, PickX: 7, PickY: 4}, {X: 6, Y: 5, PickX: 7, PickY: 5}}
+	SUB_AISLE_9  = []*models.Coordinate{{X: 3, Y: 7, PickX: 4, PickY: 7}, {X: 3, Y: 8, PickX: 4, PickY: 8}, {X: 5, Y: 7, PickX: 4, PickY: 7}, {X: 5, Y: 8, PickX: 4, PickY: 8}, {X: 6, Y: 7, PickX: 7, PickY: 7}, {X: 6, Y: 8, PickX: 7, PickY: 8}}
+	SUB_AISLE_10 = []*models.Coordinate{{X: 3, Y: 9, PickX: 4, PickY: 9}, {X: 3, Y: 10, PickX: 4, PickY: 10}, {X: 5, Y: 9, PickX: 4, PickY: 9}, {X: 5, Y: 10, PickX: 4, PickY: 10}, {X: 6, Y: 9, PickX: 7, PickY: 9}, {X: 6, Y: 10, PickX: 7, PickY: 10}}
+	SUB_AISLE_11 = []*models.Coordinate{{X: 3, Y: 13, PickX: 4, PickY: 13}, {X: 3, Y: 14, PickX: 4, PickY: 14}, {X: 5, Y: 13, PickX: 4, PickY: 13}, {X: 5, Y: 14, PickX: 4, PickY: 14}, {X: 6, Y: 13, PickX: 7, PickY: 13}, {X: 6, Y: 14, PickX: 7, PickY: 14}}
+	SUB_AISLE_12 = []*models.Coordinate{{X: 3, Y: 15, PickX: 4, PickY: 15}, {X: 3, Y: 16, PickX: 4, PickY: 16}, {X: 5, Y: 15, PickX: 4, PickY: 15}, {X: 5, Y: 16, PickX: 4, PickY: 16}, {X: 6, Y: 15, PickX: 7, PickY: 15}, {X: 6, Y: 16, PickX: 7, PickY: 16}}
 )
 
 var WAREHOUSE_LAYOUT = []*models.BlockSubAsile{

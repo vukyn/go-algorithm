@@ -135,9 +135,9 @@ func FindPickingRouteSShape() {
 	nextLoc := &models.BlockSubAsile{}
 	for {
 		listBlockDistance := make([]int, len(listBlockSubAisle))
-		for i, loc := range listBlockSubAisle {
-			listBlockDistance[i] = helper.CalculateEuclideanDistance(listBlockSubAisle[0].Coordinate, loc.Coordinate)
-		}
+		// for i, loc := range listBlockSubAisle {
+		// 	listBlockDistance[i] = helper.CalculateEuclideanDistance(listBlockSubAisle[0].Coordinate, loc.Coordinate)
+		// }
 
 		// Minimum Distance
 		distanceNext := utils.Min(listBlockDistance...)
@@ -179,11 +179,8 @@ func initWarehouseLayout() []*models.BlockSubAsile {
 	blockSubAsile[5].Locs = append(blockSubAsile[5].Locs, constants.SUB_AISLE_6...)
 	blockSubAsile[5].Locs = append(blockSubAsile[5].Locs, constants.SUB_AISLE_9...)
 	blockSubAsile[6].Locs = append(blockSubAsile[6].Locs, constants.SUB_AISLE_10...)
-	blockSubAsile[6].Locs = append(blockSubAsile[6].Locs, constants.SUB_AISLE_13...)
 	blockSubAsile[7].Locs = append(blockSubAsile[7].Locs, constants.SUB_AISLE_11...)
-	blockSubAsile[7].Locs = append(blockSubAsile[7].Locs, constants.SUB_AISLE_14...)
 	blockSubAsile[8].Locs = append(blockSubAsile[8].Locs, constants.SUB_AISLE_12...)
-	blockSubAsile[8].Locs = append(blockSubAsile[8].Locs, constants.SUB_AISLE_15...)
 
 	return blockSubAsile
 }

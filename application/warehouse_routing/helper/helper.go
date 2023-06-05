@@ -91,24 +91,6 @@ func IsBelongSubAisle(loc *models.Coordinate) int {
 			return 12
 		}
 	}
-	// Sub aisle 13
-	for _, l := range constants.SUB_AISLE_13 {
-		if l.X == loc.X && l.Y == loc.Y {
-			return 13
-		}
-	}
-	// Sub aisle 14
-	for _, l := range constants.SUB_AISLE_14 {
-		if l.X == loc.X && l.Y == loc.Y {
-			return 14
-		}
-	}
-	// Sub aisle 15
-	for _, l := range constants.SUB_AISLE_15 {
-		if l.X == loc.X && l.Y == loc.Y {
-			return 15
-		}
-	}
 	return 0
 }
 

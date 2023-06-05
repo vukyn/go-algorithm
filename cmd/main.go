@@ -34,7 +34,7 @@ func main() {
 	// callWarehouseRouting()
 	// callEncriptMD5()
 
-	pickerLoc := &models.Coordinate{}
+	// pickerLoc := &models.Coordinate{}
 	listWallLoc := make([]*models.Coordinate, 0)
 	listWalkLoc := make([]*models.Coordinate, 0)
 	listRemainWalkLoc := make([]*models.Coordinate, 0)
@@ -55,54 +55,46 @@ func main() {
 				listPickableLoc = append(listPickableLoc, &models.Coordinate{X: x, Y: y})
 			}
 			if char == strconv.Itoa(warehouseConstants.DEPOT) {
-				pickerLoc = &models.Coordinate{X: x + 1, Y: y}
+				// pickerLoc = &models.Coordinate{X: x + 1, Y: y}
 			}
 		}
 	}
 
-	// listPickLoc = append(listPickLoc, &models.Coordinate{Id: 1, X: 0, Y: 15})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{Id: 2, X: 0, Y: 14})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{Id: 3, X: 0, Y: 7})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{Id: 4, X: 0, Y: 2})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{Id: 5, X: 2, Y: 1})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{Id: 6, X: 3, Y: 1})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{Id: 7, X: 3, Y: 5})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{Id: 8, X: 3, Y: 8})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{Id: 9, X: 5, Y: 2})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{Id: 10, X: 6, Y: 2})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{Id: 11, X: 6, Y: 9})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{Id: 12, X: 5, Y: 16})
-	// listPickLoc = append(listPickLoc, &models.Coordinate{Id: 13, X: 6, Y: 16})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 1, X: 0, Y: 15})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 2, X: 0, Y: 14})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 3, X: 0, Y: 7})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 4, X: 0, Y: 2})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 5, X: 2, Y: 1})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 6, X: 3, Y: 1})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 7, X: 3, Y: 5})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 8, X: 3, Y: 8})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 9, X: 5, Y: 2})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 10, X: 6, Y: 2})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 11, X: 6, Y: 9})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 12, X: 5, Y: 16})
+	listPickLoc = append(listPickLoc, &models.Coordinate{Id: 13, X: 6, Y: 16})
+
+	// for _, v := range sortPickLoc {
+	// 	fmt.Printf("{X: %v, Y: %v},\n", v.X, v.Y)
+	// }
 	const LOCATION_FILE_PATH = "assets"
+	lastLoc := &models.Coordinate{X: 0, Y: 17}
 	for i := 0; i < 5; i++ {
-		listPickLoc = helper.GenerateRandomPickLocation(int32(i)+8, listWallLoc)
-		refListPickLoc := listPickLoc
+		listPickLoc = helper.GenerateRandomPickLocation(16, listWallLoc)
 		sb := strings.Builder{}
-		for {
-			nextPickLoc, stage := test.GetNextPickLocation(listPickLoc, listWalkLoc, pickerLoc, 1)
-			if len(nextPickLoc) != 0 {
-				pickerLoc = nextPickLoc[len(nextPickLoc)-1]
+
+		sortPickLoc := make([]*models.Coordinate, 0)
+		listNextPickLoc := make([]*models.Coordinate, 0)
+		for i := 1; i <= 7; i++ {
+			if i > 1 {
+				lastLoc = sortPickLoc[len(sortPickLoc)-1]
 			}
-			sb.WriteString(fmt.Sprintf("Stage: %v\n", stage))
-			sb.WriteString("Locations: ")
-			for _, v := range nextPickLoc {
-				listPickLoc = utils.Where(listPickLoc, func(c *models.Coordinate) bool {
-					return c.Id != v.Id
-				})
-				if pickLoc := utils.Find(refListPickLoc, func(c *models.Coordinate) bool {
-					return c.Id == v.Id
-				}); pickLoc != nil {
-					// fmt.Printf("{X:%v, Y:%v}\t", pickLoc.X, pickLoc.Y)
-					sb.WriteString(fmt.Sprintf("{X:%v, Y:%v}\t", pickLoc.X, pickLoc.Y))
-				}
-			}
-			sb.WriteString("\n")
-			if stage == 4 {
-				break
-			}
+			listPickLoc, listNextPickLoc = test.DAQPickLocation(listPickLoc, lastLoc, i)
+			sortPickLoc = append(sortPickLoc, listNextPickLoc...)
 		}
+
 		sb.WriteString("\n")
-		for _, v := range refListPickLoc {
+		for _, v := range sortPickLoc {
 			sb.WriteString(fmt.Sprintf("{X:%v, Y:%v}\t", v.X, v.Y))
 			sb.WriteString("\n")
 		}
